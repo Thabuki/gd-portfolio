@@ -177,7 +177,8 @@
 	const modal = qs('#project-modal');
 	const media = qs('#modal-media');
 	const title = qs('#modal-title');
-	const meta = qs('#modal-meta');
+	const modalRole = qs('#modal-role');
+	const modalCompany = qs('#modal-company');
 	const body = qs('#modal-body');
 	const links = qs('#modal-links');
 	const closeButtons = qsa('[data-close]', modal);
@@ -211,7 +212,38 @@
 
 		// preenche o conteúdo
 		title.textContent = data.title || '';
-		meta.textContent = data.meta || '';
+		
+		// Parse meta to extract role and company based on project patterns
+		if (data.meta) {
+			// Handle different meta patterns based on the project ID
+			if (id === 'main1') {
+				// Changer Seven: meta has role but missing company
+				modalRole.textContent = 'Game Designer';
+				modalCompany.textContent = 'Gixer Entertainment • Nov 2023 - Nov 2025';
+			} else if (id === 'main2') {
+				// PAYDAY: meta has company but missing role  
+				modalRole.textContent = 'Level Designer';
+				modalCompany.textContent = 'PopReach Incorporated • Dec 2022 - Aug 2023';
+			} else if (id === 'main3') {
+				// Archer: meta has company but missing role
+				modalRole.textContent = 'Game Designer';
+				modalCompany.textContent = 'Truly Social Games • Oct 2021 - Nov 2022';
+			} else {
+				// For other projects, try to parse the meta field
+				const metaParts = data.meta.split(' • ');
+				if (metaParts.length >= 2) {
+					modalRole.textContent = metaParts[0];
+					modalCompany.textContent = metaParts.slice(1).join(' • ');
+				} else {
+					modalRole.textContent = data.meta;
+					modalCompany.textContent = '';
+				}
+			}
+		} else {
+			modalRole.textContent = '';
+			modalCompany.textContent = '';
+		}
+		
 		body.innerHTML = '';
 		links.innerHTML = '';
 		media.innerHTML = '';
