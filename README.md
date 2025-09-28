@@ -1,7 +1,9 @@
-# Game Designer Portfolio (eng)
+# Game Designer Portfolio
+
+## English
 
 Simple website with no complex extensions, built as a game designer’s portfolio.
 
-## Portfólio de Game Designer (pt-br)
+## Brazilian Portuguese
 
 Site simples, sem extensões complexas, feito como portfólio de um game designer.
