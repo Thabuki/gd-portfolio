@@ -136,14 +136,18 @@
 				},
 				jam3: {
 					title: 'Wrong',
-					meta: 'Machinima • Oct 2017 – Dec 2017',
+					meta: 'Director/Editor • Oct 2017 – Dec 2017',
 					summary: 'Cinematic created using GTA V’s Rockstar Editor, telling the story of two modern-time outlaws and their big score that goes right—mostly.',
 					experience: [
 						'Storyboarded, captured, and edited scenes using Rockstar Editor',
 						'Final edit and post-production in Adobe Premiere',
 						'Focused on framing, pacing, and narrative clarity'
 					],
-					images: [],
+					images: [
+						'img/side-projects/wrong/wrong-1.jpg',
+						'img/side-projects/wrong/wrong-3.jpg',
+						'img/side-projects/wrong/wrong-4.jpg'
+					],
 					video: 'https://youtu.be/IMB0JMg00hQ',
 					links: []
 				},
