@@ -5,7 +5,7 @@
 	let projects = {
 			main1: {
 				title: 'Changer Seven',
-				meta: 'Game Designer • Gixer Entertainment • Nov 2023 – Nov 2025',
+				meta: 'Game/Level Designer • Gixer Entertainment • Nov 2023 – Nov 2025',
 					summary: 'Unreal Engine 5 (PC & Consoles). Designed combat/progression systems, enemy AI, and levels.',
 					experience: [
 						'Balanced player character attributes and abilities',
@@ -227,12 +227,12 @@
 		title.textContent = data.title || '';
 		
 		// Parse meta to extract role and company based on project patterns
-		if (data.meta) {
+				if (data.meta) {
 			// Handle different meta patterns based on the project ID
-			if (id === 'main1') {
-				// Changer Seven: meta has role but missing company
-				modalRole.textContent = 'Game Designer';
-				modalCompany.textContent = 'Gixer Entertainment • Nov 2023 - Nov 2025';
+				if (id === 'main1') {
+					// Changer Seven
+					modalRole.textContent = 'Game/Level Designer';
+					modalCompany.textContent = 'Gixer Entertainment • Nov 2023 - Nov 2025';
 			} else if (id === 'main2') {
 				// PAYDAY: meta has company but missing role  
 				modalRole.textContent = 'Level Designer';
