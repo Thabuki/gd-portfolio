@@ -5,7 +5,7 @@
 	let projects = {
 			main1: {
 				title: 'Changer Seven',
-				meta: 'Game Designer • Nov 2023 – Nov 2025',
+				meta: 'Game Designer • Gixer Entertainment • Nov 2023 – Nov 2025',
 					summary: 'Unreal Engine 5 (PC & Consoles). Designed combat/progression systems, enemy AI, and levels.',
 					experience: [
 						'Balanced player character attributes and abilities',
@@ -38,7 +38,7 @@
 			},
 			main2: {
 				title: 'PAYDAY Crime War',
-				meta: 'Truly Social Games • Dec 2022 – Aug 2023',
+				meta: 'PopReach Incorporated • Dec 2022 – Aug 2023',
 					summary: 'Unity (Mobile). Planned and built levels combining stealth and FPS gameplay.',
 					experience: [
 						'Planned levels that incorporated both stealth and FPS gameplay elements',
@@ -186,6 +186,13 @@
 	const body = qs('#modal-body');
 	const links = qs('#modal-links');
 	const closeButtons = qsa('[data-close]', modal);
+	const prevBtn = qs('[data-prev]');
+	const nextBtn = qs('[data-next]');
+
+	// Mantém a ordem de navegação conforme os cards no DOM
+	const cardEls = qsa('.card[data-id]');
+	const navOrder = cardEls.map(el => el.getAttribute('data-id'));
+	let currentProjectIndex = -1;
 
 		// Ano no footer
 	const yearEl = qs('#year');
@@ -213,6 +220,8 @@
 	function openProject(id) {
 		const data = projects[id];
 		if (!data) return;
+
+		currentProjectIndex = Math.max(0, navOrder.indexOf(id));
 
 		// preenche o conteúdo
 		title.textContent = data.title || '';
@@ -336,6 +345,10 @@
 		}
 
 		openModal();
+
+		// Atualiza estado dos botões Prev/Next
+		if (prevBtn) prevBtn.disabled = currentProjectIndex <= 0;
+		if (nextBtn) nextBtn.disabled = currentProjectIndex >= navOrder.length - 1;
 	}
 
 	// Abrir/fechar modal + gerenciamento de foco
@@ -383,6 +396,22 @@
 	window.addEventListener('keydown', (e) => {
 		if (modal.getAttribute('aria-hidden') === 'false' && e.key === 'Escape') {
 			closeModal();
+		}
+	});
+
+	// Navegação Prev/Next
+	function openRelative(delta) {
+		if (currentProjectIndex < 0) return;
+		const nextIndex = currentProjectIndex + delta;
+		if (nextIndex < 0 || nextIndex >= navOrder.length) return;
+		openProject(navOrder[nextIndex]);
+	}
+	if (prevBtn) prevBtn.addEventListener('click', () => openRelative(-1));
+	if (nextBtn) nextBtn.addEventListener('click', () => openRelative(1));
+	window.addEventListener('keydown', (e) => {
+		if (modal.getAttribute('aria-hidden') === 'false') {
+			if (e.key === 'ArrowLeft') openRelative(-1);
+			if (e.key === 'ArrowRight') openRelative(1);
 		}
 	});
 
