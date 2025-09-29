@@ -5,11 +5,35 @@
 	--text: #e6e9ef;
 	--muted: #a9b0bb;
 	--accent: #6ee7f7;
-	--accent-2: #a78bfa;
-	--border: #262a33;
+/* Mild CRT warp + brief horizontal desync jitters */
+@keyframes crtWarp {
+	0%, 100% { transform: none; }
+	/* brief jitter burst with slightly higher amplitude */
+	12% { transform: translateX(5px); }
+	12.6% { transform: translateX(-4px); }
+	/* one-frame shear to simulate tearing */
+	12.8% { transform: skewX(0.8deg) translateX(-2px); }
+	13% { transform: none; }
+	/* tube warp mid-cycle */
+	50% { transform: skewX(.2deg) skewY(.12deg) scale(1.003); }
+	/* second jitter burst */
+	76% { transform: translateX(-4px); }
+	76.6% { transform: translateX(5px); }
+	/* one-frame shear again */
+	76.8% { transform: skewX(-0.7deg) translateX(2px); }
+	77% { transform: none; }
+}
 	--shadow: 0 10px 30px rgba(0,0,0,.35);
 }
-
+/* Add rare big glitch (~17s cycle) on top of base warp */
+body.retro-mode .container { animation: crtWarp 3.8s ease-in-out infinite, bigGlitch 17s linear infinite; }
+@keyframes bigGlitch {
+	0%, 96%, 100% { transform: none; filter: none; }
+	/* brief strong horizontal tear */
+	97% { transform: translateX(-8px) skewX(1.2deg) scaleX(1.01); filter: saturate(150%); }
+	97.4% { transform: translateX(8px) skewX(-1deg) scaleY(1.005); }
+	97.8% { transform: none; filter: none; }
+}
 * { box-sizing: border-box; }
 html, body { height: 100%; }
 body {
@@ -280,4 +304,170 @@ body::-webkit-scrollbar-thumb:hover,
 .modal-text::-webkit-scrollbar-thumb:hover,
 .modal-media::-webkit-scrollbar-thumb:hover {
 	background-color: var(--accent-2);
+}
+
+/* ===================== Cheats ===================== */
+/* Retro Mode (Konami Code) */
+body.retro-mode { position: relative; }
+body.retro-mode {
+	filter: saturate(140%) contrast(120%) hue-rotate(-18deg) brightness(1.05);
+	animation: crtFlicker 2.8s infinite steps(2, end);
+}
+/* Vignette + subtle tube glow */
+body.retro-mode::before {
+	content: "";
+	position: fixed; inset: 0; pointer-events: none; z-index: 9998;
+	background:
+		radial-gradient(ellipse at center, rgba(0,0,0,0) 58%, rgba(0,0,0,0.35) 100%);
+}
+/* Scanlines with slow drift */
+body.retro-mode::after {
+	content: "";
+	position: fixed; inset: 0; pointer-events: none; z-index: 9999;
+	background: repeating-linear-gradient(
+		180deg,
+		rgba(255,255,255,0.06) 0px,
+		rgba(255,255,255,0.06) 2px,
+		rgba(0,0,0,0.05) 2px,
+		rgba(0,0,0,0.05) 4px
+	);
+	mix-blend-mode: overlay;
+	animation: scanScroll 6s linear infinite;
+	animation: scanScroll 6s linear infinite, bigScan 17s steps(1, end) infinite;
+}
+@keyframes bigScan {
+	0%, 96%, 100% { background-position-y: 0; }
+	97% { background-position-y: 18px; }
+	97.4% { background-position-y: -12px; }
+	97.8% { background-position-y: 0; }
+}
+/* Chromatic aberration on headings/titles for retro feel */
+body.retro-mode .hero h1,
+body.retro-mode .card-title,
+body.retro-mode h2,
+body.retro-mode h3 {
+	text-shadow:
+		1px 0 0 rgba(255,0,92,.45),
+	 -1px 0 0 rgba(0,255,255,.45),
+		0 0 6px rgba(110,231,247,.25);
+	/* Sync an extra chromatic punch with the rare big glitch cycle */
+	animation: bigChrom 17s linear infinite;
+}
+@keyframes bigChrom {
+	0%, 96%, 100% {
+		text-shadow:
+			1px 0 0 rgba(255,0,92,.45),
+		 -1px 0 0 rgba(0,255,255,.45),
+			0 0 6px rgba(110,231,247,.25);
+	}
+	97% {
+		text-shadow:
+			2px 0 0 rgba(255,0,92,.75),
+		 -2px 0 0 rgba(0,255,255,.75),
+			0 0 12px rgba(110,231,247,.45);
+	}
+	97.4% {
+		text-shadow:
+			3px 0 0 rgba(255,0,92,.75),
+		 -3px 0 0 rgba(0,255,255,.75),
+			0 0 16px rgba(167,139,250,.35);
+	}
+	97.8% {
+		text-shadow:
+			1px 0 0 rgba(255,0,92,.45),
+		 -1px 0 0 rgba(0,255,255,.45),
+			0 0 6px rgba(110,231,247,.25);
+	}
+}
+/* Pixelate actual <img> content (modal/media) */
+body.retro-mode img,
+body.retro-mode video {
+	image-rendering: pixelated;
+}
+/* Mild CRT warp + brief horizontal desync jitters */
+@keyframes crtWarp {
+	0%, 100% { transform: none; }
+	/* brief jitter burst */
+	12% { transform: translateX(3px); }
+	12.5% { transform: translateX(-2px); }
+	13% { transform: none; }
+	/* tube warp mid-cycle */
+	50% { transform: skewX(.2deg) skewY(.12deg) scale(1.003); }
+	/* second jitter burst */
+	76% { transform: translateX(-2px); }
+	76.5% { transform: translateX(2px); }
+	77% { transform: none; }
+}
+@keyframes crtFlicker { 0%, 97%, 100% { opacity: 1; } 98% { opacity: .985; } }
+@keyframes scanScroll { from { background-position-y: 0; } to { background-position-y: 4px; } }
+body.retro-mode .container { animation: crtWarp 3.8s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+	body.retro-mode { filter: saturate(120%) contrast(110%) hue-rotate(-8deg); animation: none; }
+	body.retro-mode::after { animation: none; }
+	body.retro-mode .container { animation: none; }
+}
+
+/* Phosphor bloom on bright UI elements */
+body.retro-mode .modal-links a {
+	box-shadow: 0 0 10px rgba(110,231,247,.55), 0 0 24px rgba(110,231,247,.28);
+	filter: saturate(130%);
+}
+body.retro-mode .brand {
+	text-shadow: 0 0 8px rgba(110,231,247,.35), 0 0 16px rgba(167,139,250,.22);
+}
+body.retro-mode .site-nav a:hover,
+body.retro-mode .site-nav a:focus {
+	box-shadow: 0 0 8px rgba(167,139,250,.3);
+}
+body.retro-mode .card:hover {
+	box-shadow: 0 0 0 1px rgba(110,231,247,.35), 0 0 22px rgba(110,231,247,.15);
+}
+
+/* Soft scanline mask over modal dialog when open */
+body.retro-mode .modal[aria-hidden="false"] .modal-dialog::after {
+	content: "";
+	position: absolute; inset: 0; pointer-events: none;
+	background: repeating-linear-gradient(
+		180deg,
+		rgba(255,255,255,0.05) 0px,
+		rgba(255,255,255,0.05) 2px,
+		rgba(0,0,0,0.04) 2px,
+		rgba(0,0,0,0.04) 4px
+	);
+	mix-blend-mode: overlay;
+	opacity: .4;
+}
+
+/* Debug Overlay (IDDQD) */
+body.debug-mode .card,
+body.debug-mode .modal, 
+body.debug-mode .site-header, 
+body.debug-mode .site-footer, 
+body.debug-mode .section { outline: 1px dashed #f59e0b; outline-offset: -1px; }
+body.debug-mode .thumb::after {
+	content: attr(aria-label);
+	position: absolute; left: 6px; top: 6px; font-size: 12px; color: #111;
+	background: #f59e0b; padding: 2px 6px; border-radius: 4px;
+}
+
+/* IDCLIP highlight */
+.card.clip-target { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+/* IDCAT follower */
+.idcat {
+	position: fixed; left: 0; top: 0; z-index: 2000; pointer-events: none;
+	font-size: 24px; filter: drop-shadow(0 2px 4px rgba(0,0,0,.5));
+	transform: translate(-100px, -100px);
+}
+
+/* Mensagem de Cheat ativado */
+.cheat-toast {
+	position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%) translateY(10px);
+	background: rgba(18,21,26,.9); color: var(--text); border: 1px solid var(--border);
+	padding: .5rem .75rem; border-radius: .5rem; z-index: 3000; opacity: 0;
+	transition: opacity .2s ease, transform .2s ease;
+}
+.cheat-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+@media (prefers-reduced-motion: reduce) {
+	.cheat-toast { transition: none; }
 }

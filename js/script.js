@@ -415,6 +415,201 @@
 		}
 	});
 
+	// ----------------------------------------
+	// Cheats: Konami Code, IDDQD, IDCLIP, IDCAT
+	// ----------------------------------------
+
+	function isTypingContext() {
+		const ae = document.activeElement;
+		if (!ae) return false;
+		const tag = ae.tagName?.toLowerCase();
+		return ae.isContentEditable || tag === 'input' || tag === 'textarea' || tag === 'select';
+	}
+	const konamiSeq = ['arrowup','arrowup','arrowdown','arrowdown','arrowleft','arrowright','arrowleft','arrowright','b','a'];
+	let keyBuffer = [];
+	let textBuffer = '';
+	let textBufferTimer = null;
+	const MAX_KEYBUF = 20;
+	const MAX_TEXTBUF = 32;
+
+	function normKey(e) {
+		const k = e.key || '';
+		return String(k).toLowerCase();
+	}
+	function endsWithKonami(buf) {
+		if (buf.length < konamiSeq.length) return false;
+		for (let i = 0; i < konamiSeq.length; i++) {
+			if (buf[buf.length - konamiSeq.length + i] !== konamiSeq[i]) return false;
+		}
+		return true;
+	}
+	function showToast(msg) {
+		let t = qs('#cheat-toast');
+		if (!t) {
+			t = document.createElement('div');
+			t.id = 'cheat-toast';
+			t.className = 'cheat-toast';
+			document.body.appendChild(t);
+		}
+		t.textContent = msg;
+		// trigger
+		t.classList.remove('show');
+		void t.offsetWidth; // reflow
+		t.classList.add('show');
+		clearTimeout(t._hideTimer);
+		t._hideTimer = setTimeout(() => t.classList.remove('show'), 1600);
+	}
+
+	// Helper: swap About photo based on retro mode
+	function updateAboutPhotoForRetro(enabled) {
+		const img = qs('#about .about-photo img');
+		if (!img) return;
+		const normalSrc = 'img/thales.jpg';
+		const retroSrc = 'img/prettysmile.png';
+		// If switching ON and not already retro, change
+		if (enabled) {
+			if (img.getAttribute('src') !== retroSrc) img.setAttribute('src', retroSrc);
+		} else {
+			if (img.getAttribute('src') !== normalSrc) img.setAttribute('src', normalSrc);
+		}
+	}
+
+	// Konami Code: Retro Mode
+	function setRetroMode(enabled) {
+		document.body.classList.toggle('retro-mode', !!enabled);
+		try { sessionStorage.setItem('retroMode', enabled ? '1' : '0'); } catch {}
+		updateAboutPhotoForRetro(enabled);
+		showToast(`Retro Mode ${enabled ? 'ON' : 'OFF'}`);
+	}
+	function toggleRetroMode() {
+		setRetroMode(!document.body.classList.contains('retro-mode'));
+	}
+
+	// IDDQD: Debug Overlay
+	function setDebugMode(enabled) {
+		document.body.classList.toggle('debug-mode', !!enabled);
+		try { sessionStorage.setItem('debugMode', enabled ? '1' : '0'); } catch {}
+		showToast(`Debug Overlay ${enabled ? 'ON' : 'OFF'}`);
+	}
+	function toggleDebugMode() {
+		setDebugMode(!document.body.classList.contains('debug-mode'));
+	}
+
+	// IDCLIP: keyboard navega pelos cards, enter seleciona eles
+	let clipActive = false;
+	let clipIndex = 0;
+	function highlightClipTarget() {
+		qsa('.card.clip-target').forEach(el => el.classList.remove('clip-target'));
+		const targetId = navOrder[clipIndex];
+		const el = qsa(`.card[data-id="${CSS.escape(targetId)}"]`)[0];
+		if (el) {
+			el.classList.add('clip-target');
+			el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+		}
+	}
+	function activateClip() {
+		if (!navOrder.length) return;
+		clipActive = true;
+		clipIndex = Math.max(0, currentProjectIndex >= 0 ? currentProjectIndex : 0);
+		highlightClipTarget();
+		showToast('IDCLIP ON — Arrows move, Enter opens, Esc exits');
+	}
+	function deactivateClip() {
+		clipActive = false;
+		qsa('.card.clip-target').forEach(el => el.classList.remove('clip-target'));
+		showToast('IDCLIP OFF');
+	}
+
+	// IDCAT: gatinho segue o cursor
+	let catEnabled = false;
+	let catEl = null;
+	let catRAF = 0;
+	let targetX = 0, targetY = 0;
+	let catX = 0, catY = 0;
+	const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+	function catLoop() {
+		if (!catEnabled || !catEl) return;
+		const lerp = prefersReduced ? 1 : 0.15;
+		catX = catX + (targetX - catX) * lerp;
+		catY = catY + (targetY - catY) * lerp;
+		catEl.style.transform = `translate(${Math.round(catX)}px, ${Math.round(catY)}px)`;
+		catRAF = requestAnimationFrame(catLoop);
+	}
+	function enableCat() {
+		if (catEnabled) return;
+		catEnabled = true;
+		catEl = document.createElement('div');
+		catEl.className = 'idcat';
+		catEl.setAttribute('aria-hidden', 'true');
+		catEl.textContent = '🐱';
+		document.body.appendChild(catEl);
+		const onMove = (e) => { targetX = e.clientX + 12; targetY = e.clientY + 12; if (!prefersReduced && !catRAF) catRAF = requestAnimationFrame(catLoop); else catLoop(); };
+		window.addEventListener('mousemove', onMove);
+		catEl._cleanup = () => window.removeEventListener('mousemove', onMove);
+		showToast('IDCAT ON');
+	}
+	function disableCat() {
+		catEnabled = false;
+		if (catRAF) cancelAnimationFrame(catRAF);
+		catRAF = 0;
+		if (catEl) { try { catEl._cleanup?.(); } catch {} catEl.remove(); catEl = null; }
+		showToast('IDCAT OFF');
+	}
+	function toggleCat() { catEnabled ? disableCat() : enableCat(); }
+
+	// Restaura modos persistentes
+	try {
+		if (sessionStorage.getItem('retroMode') === '1') { document.body.classList.add('retro-mode'); updateAboutPhotoForRetro(true); }
+		if (sessionStorage.getItem('debugMode') === '1') document.body.classList.add('debug-mode');
+	} catch {}
+
+	// Key handling global para cheats
+	window.addEventListener('keydown', (e) => {
+		// Pula quando digitando em campos
+		if (isTypingContext()) return;
+		const k = normKey(e);
+		// Mantém key buffer para o Konami Code
+		keyBuffer.push(k);
+		if (keyBuffer.length > MAX_KEYBUF) keyBuffer.shift();
+		if (endsWithKonami(keyBuffer)) {
+			// Opcional: permitir Enter para finalizar, mas alternar apenas na sequência
+			toggleRetroMode();
+			keyBuffer.length = 0; // reset
+			return;
+		}
+		// Maintain text buffer for word cheats (letters only)
+		// Mantém o buffer de palavras para cheats (apenas letras)
+		if (/^[a-z0-9]$/.test(k)) {
+			textBuffer += k;
+			if (textBuffer.length > MAX_TEXTBUF) textBuffer = textBuffer.slice(-MAX_TEXTBUF);
+			clearTimeout(textBufferTimer);
+			textBufferTimer = setTimeout(() => { textBuffer = ''; }, 3000);
+			if (textBuffer.endsWith('iddqd')) { toggleDebugMode(); textBuffer = ''; return; }
+			if (textBuffer.endsWith('idclip')) { if (!clipActive) activateClip(); else deactivateClip(); textBuffer = ''; return; }
+			if (textBuffer.endsWith('idcat')) { toggleCat(); textBuffer = ''; return; }
+		}
+	});
+
+	// Setinhas para navegação no IDCLIP
+	window.addEventListener('keydown', (e) => {
+		if (!clipActive) return;
+		if (modal.getAttribute('aria-hidden') === 'false') return; // ignore when modal open
+		const k = normKey(e);
+		if (k === 'escape') { deactivateClip(); return; }
+		if (k === 'enter' || k === ' ') {
+			e.preventDefault();
+			const id = navOrder[clipIndex];
+			const el = qsa(`.card[data-id="${CSS.escape(id)}"]`)[0];
+			el?.click();
+			return;
+		}
+		const colsDesktop = 3; // default da grid principal, mas navegamos linearmente pelo índice usando left/right +/-1, up/down +/- cols
+		if (k === 'arrowleft') { e.preventDefault(); clipIndex = Math.max(0, clipIndex - 1); highlightClipTarget(); }
+		else if (k === 'arrowright') { e.preventDefault(); clipIndex = Math.min(navOrder.length - 1, clipIndex + 1); highlightClipTarget(); }
+		else if (k === 'arrowup') { e.preventDefault(); clipIndex = Math.max(0, clipIndex - colsDesktop); highlightClipTarget(); }
+		else if (k === 'arrowdown') { e.preventDefault(); clipIndex = Math.min(navOrder.length - 1, clipIndex + colsDesktop); highlightClipTarget(); }
+	});
+
 	// Focus trap
 	let untrap = null;
 	function trapFocus(container) {
