@@ -5,7 +5,7 @@
 	let projects = {
 			main1: {
 				title: 'Changer Seven',
-				meta: 'Game/Level Designer • Gixer Entertainment • Nov 2023 - Nov 2025',
+				meta: 'Game/Level Designer • Gixer Entertainment • Nov 2023 – Oct 2025',
 					summary: 'Unreal Engine 5 (PC & Consoles). Designed combat/progression systems, enemy AI, and levels.',
 					experience: [
 						'Balanced player character attributes and abilities',
@@ -38,7 +38,7 @@
 			},
 			main2: {
 				title: 'PAYDAY Crime War',
-				meta: 'PopReach Incorporated • Dec 2022 - Aug 2023',
+				meta: 'PopReach Incorporated • Dec 2022 – Aug 2023',
 					summary: 'Unity (Mobile). Planned and built levels combining stealth and FPS gameplay.',
 					experience: [
 						'Planned levels that incorporated both stealth and FPS gameplay elements',
@@ -66,7 +66,7 @@
 			},
 				main3: {
 					title: 'Archer: DANGER PHONE',
-					meta: 'Truly Social Games • Oct 2021 - Nov 2022',
+					meta: 'Truly Social Games • Oct 2021 – Nov 2022',
 					summary: 'Unity (Mobile). Live-ops data, gameplay balance, documentation, offers, and automation.',
 					experience: [
 						'Limited-time event data implementation and weekly set-up',
@@ -115,7 +115,7 @@
 				},
 				jam2: {
 					title: 'BORKSPEL',
-					meta: 'Gameplay Designer/Programmer • Jul 2018 - Oct 2018',
+					meta: 'Gameplay Designer/Programmer • Jul 2018 – Oct 2018',
 					summary: 'Online head-to-head competitive VR game for PC where two players race to assemble furniture in a set time, fighting for their job—and their lives.',
 					experience: [
 						'Designed and implemented gameplay systems and interactions in Unity',
@@ -136,7 +136,7 @@
 				},
 				jam3: {
 					title: 'Wrong',
-					meta: 'Director/Editor • Oct 2017 - Dec 2017',
+					meta: 'Director/Editor • Oct 2017 – Dec 2017',
 					summary: 'Cinematic created using GTA V\'s Rockstar Editor, telling the story of two modern-time outlaws and their big score that goes right—mostly.',
 					experience: [
 						'Storyboarded, captured, and edited scenes using Rockstar Editor',
@@ -154,7 +154,7 @@
 				},
 				jam4: {
 					title: 'The Omni Crusher',
-					meta: 'Physical Interface • Mar 2016 - Dec 2016',
+					meta: 'Physical Interface • Mar 2016 – Dec 2016',
 					summary: 'Physical working prototype from a year-long investigation into ergonomic arcade interfaces for fighting games.',
 					experience: [
 						'Conducted ergonomic studies and iterative hardware revisions',
@@ -228,20 +228,20 @@
 		title.textContent = data.title || '';
 		
 		// Parse meta to extract role and company based on project patterns
-				if (data.meta) {
+		if (data.meta) {
 			// Handle different meta patterns based on the project ID
-				if (id === 'main1') {
-					// Changer Seven
-					modalRole.textContent = 'Game/Level Designer';
-					modalCompany.textContent = 'Gixer Entertainment • Nov 2023 - Nov 2025';
+			if (id === 'main1') {
+				// Changer Seven
+				modalRole.textContent = 'Game/Level Designer';
+				modalCompany.textContent = 'Gixer Entertainment • Nov 2023 – Oct 2025';
 			} else if (id === 'main2') {
 				// PAYDAY: meta has company but missing role  
 				modalRole.textContent = 'Level Designer';
-				modalCompany.textContent = 'PopReach Incorporated • Dec 2022 - Aug 2023';
+				modalCompany.textContent = 'PopReach Incorporated • Dec 2022 – Aug 2023';
 			} else if (id === 'main3') {
 				// Archer: meta has company but missing role
 				modalRole.textContent = 'Game Designer';
-				modalCompany.textContent = 'Truly Social Games • Oct 2021 - Nov 2022';
+				modalCompany.textContent = 'Truly Social Games • Oct 2021 – Nov 2022';
 			} else {
 				// For other projects, try to parse the meta field
 				const metaParts = data.meta.split(' • ');
@@ -280,7 +280,6 @@
 				});
 				body.appendChild(ul);
 			}
-
 			// ordem da mídia: primeira imagem -> vídeo -> imagens restantes
 			const videoId = getYouTubeId(data.video);
 			const imgs = Array.isArray(data.images) ? data.images : [];
