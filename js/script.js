@@ -460,13 +460,13 @@
 		t._hideTimer = setTimeout(() => t.classList.remove('show'), 1600);
 	}
 
-	// Helper: swap About photo based on retro mode
+	// Helper: trocar a foto do "Sobre mim" no modo retrô
 	function updateAboutPhotoForRetro(enabled) {
 		const img = qs('#about .about-photo img');
 		if (!img) return;
 		const normalSrc = 'img/thales.jpg';
 		const retroSrc = 'img/prettysmile.png';
-		// If switching ON and not already retro, change
+		// Se estiver ligandodo o modo retrô, troca a imagem
 		if (enabled) {
 			if (img.getAttribute('src') !== retroSrc) img.setAttribute('src', retroSrc);
 		} else {
@@ -479,6 +479,7 @@
 		document.body.classList.toggle('retro-mode', !!enabled);
 		try { sessionStorage.setItem('retroMode', enabled ? '1' : '0'); } catch {}
 		updateAboutPhotoForRetro(enabled);
+		if (enabled) enableRetroCursor(); else disableRetroCursor();
 		showToast(`Retro Mode ${enabled ? 'ON' : 'OFF'}`);
 	}
 	function toggleRetroMode() {
@@ -532,7 +533,9 @@
 		const lerp = prefersReduced ? 1 : 0.15;
 		catX = catX + (targetX - catX) * lerp;
 		catY = catY + (targetY - catY) * lerp;
-		catEl.style.transform = `translate(${Math.round(catX)}px, ${Math.round(catY)}px)`;
+		// Usar left/top para evitar problemas com scroll e conflitos com transform do CSS
+		catEl.style.left = `${Math.round(catX)}px`;
+		catEl.style.top = `${Math.round(catY)}px`;
 		catRAF = requestAnimationFrame(catLoop);
 	}
 	function enableCat() {
@@ -543,6 +546,11 @@
 		catEl.setAttribute('aria-hidden', 'true');
 		catEl.textContent = '🐱';
 		document.body.appendChild(catEl);
+		// Init offscreen e limpa qualquer transform vindo do CSS
+		catX = -100; catY = -100; targetX = -100; targetY = -100;
+		catEl.style.left = `${catX}px`;
+		catEl.style.top = `${catY}px`;
+		catEl.style.transform = 'none';
 		const onMove = (e) => { targetX = e.clientX + 12; targetY = e.clientY + 12; if (!prefersReduced && !catRAF) catRAF = requestAnimationFrame(catLoop); else catLoop(); };
 		window.addEventListener('mousemove', onMove);
 		catEl._cleanup = () => window.removeEventListener('mousemove', onMove);
@@ -557,9 +565,95 @@
 	}
 	function toggleCat() { catEnabled ? disableCat() : enableCat(); }
 
+	// Retro Mode custom cursor (CRT crosshair + extras)
+	let cursorEnabled = false;
+	let cursorEl = null;
+	let ghostEls = [];
+	let cursorRAF = 0;
+	let cx = -100, cy = -100; // pointer pos atual
+	let lastX = 0, lastY = 0, lastT = 0; // para scaling baseado em velocidade
+	function cursorLoop() {
+		if (!cursorEnabled) return;
+		for (let i = 0; i < ghostEls.length; i++) {
+			const g = ghostEls[i];
+			const tx = (i === 0 ? cx : ghostEls[i-1]._x);
+			const ty = (i === 0 ? cy : ghostEls[i-1]._y);
+			g._x = g._x + (tx - g._x) * 0.15;
+			g._y = g._y + (ty - g._y) * 0.15;
+			g.style.left = `${Math.round(g._x)}px`;
+			g.style.top = `${Math.round(g._y)}px`;
+		}
+		cursorRAF = requestAnimationFrame(cursorLoop);
+	}
+	function onCursorMove(e) {
+		cx = e.clientX; cy = e.clientY;
+		if (cursorEl) {
+			cursorEl.style.left = `${cx}px`;
+			cursorEl.style.top = `${cy}px`;
+			const now = performance.now();
+			const dt = Math.max(1, now - (lastT || now));
+			const dx = cx - (lastX || cx);
+			const dy = cy - (lastY || cy);
+			const speed = Math.sqrt(dx*dx + dy*dy) / dt; // px/ms
+			const scale = Math.max(0.9, Math.min(1 + speed * 0.4, 1.6));
+			cursorEl.style.transform = `scale(${scale.toFixed(3)})`;
+			lastX = cx; lastY = cy; lastT = now;
+			// Link-aware hover
+			const hoverEl = e.target?.closest?.('a, button, [role="button"], .card, input, textarea, select, label');
+			cursorEl.classList.toggle('hover', !!hoverEl);
+		}
+		if (!prefersReduced && !cursorRAF) cursorRAF = requestAnimationFrame(cursorLoop);
+	}
+	function onCursorClick(e) {
+		if (!cursorEnabled) return;
+		const r = document.createElement('div');
+		r.className = 'retro-ripple';
+		r.style.left = `${e.clientX}px`;
+		r.style.top = `${e.clientY}px`;
+		document.body.appendChild(r);
+		const cleanup = () => { r.removeEventListener('animationend', cleanup); r.remove(); };
+		r.addEventListener('animationend', cleanup);
+		setTimeout(cleanup, 420);
+	}
+	function enableRetroCursor() {
+		if (cursorEnabled) return;
+		cursorEnabled = true;
+		cursorEl = document.createElement('div');
+		cursorEl.className = 'retro-cursor';
+		cursorEl.setAttribute('aria-hidden', 'true');
+		cursorEl.style.left = '-100px';
+		cursorEl.style.top = '-100px';
+		document.body.appendChild(cursorEl);
+		ghostEls = [];
+		if (!prefersReduced) {
+			for (let i = 0; i < 3; i++) {
+				const g = document.createElement('div');
+				g.className = 'retro-ghost';
+				g._x = -100; g._y = -100;
+				g.style.left = '-100px'; g.style.top = '-100px';
+				document.body.appendChild(g);
+				ghostEls.push(g);
+			}
+		}
+		window.addEventListener('mousemove', onCursorMove, { passive: true });
+		window.addEventListener('mousedown', onCursorClick, { passive: true });
+		if (!prefersReduced) cursorRAF = requestAnimationFrame(cursorLoop);
+	}
+	function disableRetroCursor() {
+		cursorEnabled = false;
+		if (cursorRAF) cancelAnimationFrame(cursorRAF);
+		cursorRAF = 0;
+		window.removeEventListener('mousemove', onCursorMove);
+		window.removeEventListener('mousedown', onCursorClick);
+		try { cursorEl?.remove(); } catch {}
+		cursorEl = null;
+		ghostEls.forEach(g => { try { g.remove(); } catch {} });
+		ghostEls = [];
+	}
+
 	// Restaura modos persistentes
 	try {
-		if (sessionStorage.getItem('retroMode') === '1') { document.body.classList.add('retro-mode'); updateAboutPhotoForRetro(true); }
+		if (sessionStorage.getItem('retroMode') === '1') { document.body.classList.add('retro-mode'); updateAboutPhotoForRetro(true); enableRetroCursor(); }
 		if (sessionStorage.getItem('debugMode') === '1') document.body.classList.add('debug-mode');
 	} catch {}
 
