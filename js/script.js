@@ -478,11 +478,25 @@
 		}
 	}
 
+	// Helper: trocar a logo do header no modo retrô
+	function updateLogoForRetro(enabled) {
+		const logo = qs('header .brand img');
+		if (!logo) return;
+		const normalSrc = 'img/logo.png';
+		const retroSrc = 'img/prettysmile.png';
+		if (enabled) {
+			if (logo.getAttribute('src') !== retroSrc) logo.setAttribute('src', retroSrc);
+		} else {
+			if (logo.getAttribute('src') !== normalSrc) logo.setAttribute('src', normalSrc);
+		}
+	}
+
 	// Konami Code: Retro Mode
 	function setRetroMode(enabled) {
 		document.body.classList.toggle('retro-mode', !!enabled);
 		try { sessionStorage.setItem('retroMode', enabled ? '1' : '0'); } catch {}
 		updateAboutPhotoForRetro(enabled);
+		updateLogoForRetro(enabled);
 		if (enabled) enableRetroCursor(); else disableRetroCursor();
 		showToast(`Retro Mode ${enabled ? 'ON' : 'OFF'}`);
 	}
@@ -692,7 +706,7 @@
 
 	// Restaura modos persistentes
 	try {
-		if (sessionStorage.getItem('retroMode') === '1') { document.body.classList.add('retro-mode'); updateAboutPhotoForRetro(true); enableRetroCursor(); }
+		if (sessionStorage.getItem('retroMode') === '1') { document.body.classList.add('retro-mode'); updateAboutPhotoForRetro(true); updateLogoForRetro(true); enableRetroCursor(); }
 		if (sessionStorage.getItem('debugMode') === '1') document.body.classList.add('debug-mode');
 	} catch {}
 

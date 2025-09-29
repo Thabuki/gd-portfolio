@@ -405,6 +405,7 @@ body.retro-mode .container { animation: crtWarp 3.8s ease-in-out infinite; }
 	body.retro-mode { filter: saturate(120%) contrast(110%) hue-rotate(-8deg); animation: none; }
 	body.retro-mode::after { animation: none; }
 	body.retro-mode .container { animation: none; }
+	body.retro-mode .brand img { animation: none; }
 }
 
 /* Bloom em elementos UI com brightness alta */
@@ -414,6 +415,43 @@ body.retro-mode .modal-links a {
 }
 body.retro-mode .brand {
 	text-shadow: 0 0 8px rgba(110,231,247,.35), 0 0 16px rgba(167,139,250,.22);
+}
+/* Brilho CRT discreto na logo + sync com o pulso do glitch */
+body.retro-mode .brand img {
+	filter: saturate(130%) contrast(115%)
+			drop-shadow(0 0 8px rgba(110,231,247,.35))
+			drop-shadow(0 0 14px rgba(167,139,250,.22));
+	transform-origin: 50% 50%;
+	will-change: transform, filter;
+	animation: logoPulse 17s linear infinite;
+}
+@keyframes logoPulse {
+	0%, 96%, 100% {
+		filter: saturate(130%) contrast(115%)
+				drop-shadow(0 0 8px rgba(110,231,247,.35))
+				drop-shadow(0 0 14px rgba(167,139,250,.22));
+		transform: none;
+	}
+	97% {
+		/* pulso gentil + pequeno wobble */
+		filter: saturate(155%) contrast(130%)
+				drop-shadow(0 0 10px rgba(110,231,247,.55))
+				drop-shadow(0 0 18px rgba(167,139,250,.35));
+		transform: translateX(-1px) rotate(-0.6deg) skewX(0.2deg) scale(1.01);
+	}
+	97.4% {
+		/* chroma split mais forte + wobble invertido */
+		filter: saturate(170%) contrast(135%)
+				drop-shadow(0 0 12px rgba(255,0,92,.50))
+				drop-shadow(0 0 22px rgba(0,255,255,.40));
+		transform: translateX(1px) rotate(0.6deg) skewX(-0.2deg) scale(1.005);
+	}
+	97.8% {
+		filter: saturate(130%) contrast(115%)
+				drop-shadow(0 0 8px rgba(110,231,247,.35))
+				drop-shadow(0 0 14px rgba(167,139,250,.22));
+		transform: none;
+	}
 }
 body.retro-mode .site-nav a:hover,
 body.retro-mode .site-nav a:focus {
