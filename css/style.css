@@ -439,8 +439,14 @@ body.retro-mode .modal[aria-hidden="false"] .modal-dialog::after {
 }
 
 /* Retro Mode cursor and effects */
-body.retro-mode { cursor: none; }
-body.retro-mode input, body.retro-mode textarea { cursor: text; }
+/* Hide native cursor on all elements when Retro Mode is ON. */
+body.retro-mode, body.retro-mode * { cursor: none !important; }
+/* Allow text caret where appropriate. */
+body.retro-mode input, 
+body.retro-mode textarea,
+body.retro-mode [contenteditable="true"] { cursor: text !important; }
+/* Best-effort: some browsers may still show cursor inside cross-origin iframes. */
+body.retro-mode .video-frame { cursor: none !important; }
 
 .retro-cursor {
 	position: fixed; left: -9999px; top: -9999px; z-index: 4000; pointer-events: none;

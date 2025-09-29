@@ -358,6 +358,8 @@
 		modal.setAttribute('aria-hidden', 'false');
 		trapFocus(modal);
 			document.body.classList.add('modal-open');
+		// Recomputa o hover do cursor quando o modal é aberto (a sobreposição afeta a detecção de área)
+		try { if (typeof updateCursorHover === 'function') updateCursorHover(); } catch {}
 	}
 	function closeModal() {
 		// Interrompe qualquer mídia em reprodução e limpa
@@ -371,6 +373,8 @@
 		releaseFocus();
 		if (lastFocused && lastFocused.focus) lastFocused.focus();
 			document.body.classList.remove('modal-open');
+		// Recomputa o hover do cursor quando o modal é fechado
+		try { if (typeof updateCursorHover === 'function') updateCursorHover(); } catch {}
 	}
 
 	// Vincula a abertura nos cards
@@ -572,6 +576,12 @@
 	let cursorRAF = 0;
 	let cx = -100, cy = -100; // pointer pos atual
 	let lastX = 0, lastY = 0, lastT = 0; // para scaling baseado em velocidade
+	function updateCursorHover() {
+		if (!cursorEl) return;
+		const el = document.elementFromPoint?.(cx, cy) || null;
+		const hoverEl = el && el.closest ? el.closest('a, button, [role="button"], .card, input, textarea, select, label') : null;
+		cursorEl.classList.toggle('hover', !!hoverEl);
+	}
 	function cursorLoop() {
 		if (!cursorEnabled) return;
 		for (let i = 0; i < ghostEls.length; i++) {
@@ -598,9 +608,8 @@
 			const scale = Math.max(0.9, Math.min(1 + speed * 0.4, 1.6));
 			cursorEl.style.transform = `scale(${scale.toFixed(3)})`;
 			lastX = cx; lastY = cy; lastT = now;
-			// Link-aware hover
-			const hoverEl = e.target?.closest?.('a, button, [role="button"], .card, input, textarea, select, label');
-			cursorEl.classList.toggle('hover', !!hoverEl);
+			// Link-aware hover: recomputa baseado na posição atual
+			updateCursorHover();
 		}
 		if (!prefersReduced && !cursorRAF) cursorRAF = requestAnimationFrame(cursorLoop);
 	}
@@ -637,6 +646,24 @@
 		}
 		window.addEventListener('mousemove', onCursorMove, { passive: true });
 		window.addEventListener('mousedown', onCursorClick, { passive: true });
+		const onViewportChange = () => { updateCursorHover(); };
+		window.addEventListener('scroll', onViewportChange, { passive: true });
+		window.addEventListener('wheel', onViewportChange, { passive: true });
+		window.addEventListener('resize', onViewportChange, { passive: true });
+		cursorEl._onViewportChange = onViewportChange;
+		// Recomputa com mudanças de foco do teclado
+		const onFocusChange = () => { updateCursorHover(); };
+		window.addEventListener('focusin', onFocusChange, true);
+		window.addEventListener('focusout', onFocusChange, true);
+		cursorEl._onFocusChange = onFocusChange;
+		// Também escuta scroll dentro das colunas do modal (não propaga para window)
+		const scrollTargets = [
+			document.querySelector('.modal-media'),
+			document.querySelector('.modal-text'),
+			document.querySelector('.modal-content')
+		].filter(Boolean);
+		scrollTargets.forEach(t => t.addEventListener('scroll', onViewportChange, { passive: true }));
+		cursorEl._scrollTargets = scrollTargets;
 		if (!prefersReduced) cursorRAF = requestAnimationFrame(cursorLoop);
 	}
 	function disableRetroCursor() {
@@ -645,6 +672,18 @@
 		cursorRAF = 0;
 		window.removeEventListener('mousemove', onCursorMove);
 		window.removeEventListener('mousedown', onCursorClick);
+		if (cursorEl && cursorEl._onViewportChange) {
+			window.removeEventListener('scroll', cursorEl._onViewportChange);
+			window.removeEventListener('wheel', cursorEl._onViewportChange);
+			window.removeEventListener('resize', cursorEl._onViewportChange);
+			if (cursorEl._scrollTargets) {
+				try { cursorEl._scrollTargets.forEach(t => t.removeEventListener('scroll', cursorEl._onViewportChange)); } catch {}
+			}
+		}
+		if (cursorEl && cursorEl._onFocusChange) {
+			window.removeEventListener('focusin', cursorEl._onFocusChange, true);
+			window.removeEventListener('focusout', cursorEl._onFocusChange, true);
+		}
 		try { cursorEl?.remove(); } catch {}
 		cursorEl = null;
 		ghostEls.forEach(g => { try { g.remove(); } catch {} });
@@ -671,7 +710,6 @@
 			keyBuffer.length = 0; // reset
 			return;
 		}
-		// Maintain text buffer for word cheats (letters only)
 		// Mantém o buffer de palavras para cheats (apenas letras)
 		if (/^[a-z0-9]$/.test(k)) {
 			textBuffer += k;
