@@ -497,7 +497,7 @@
 		try { sessionStorage.setItem('retroMode', enabled ? '1' : '0'); } catch {}
 		updateAboutPhotoForRetro(enabled);
 		updateLogoForRetro(enabled);
-		if (enabled) enableRetroCursor(); else disableRetroCursor();
+		if (enabled) enableGhostTrail(); else disableGhostTrail();
 		showToast(`Retro Mode ${enabled ? 'ON' : 'OFF'}`);
 	}
 	function toggleRetroMode() {
@@ -704,9 +704,54 @@
 		ghostEls = [];
 	}
 
+	// Cursor trail fantasma (sem o cursor customizado)
+	let ghostTrailEnabled = false;
+	let ghostRAF = 0;
+	function ghostLoop() {
+		if (!ghostTrailEnabled) return;
+		for (let i = 0; i < ghostEls.length; i++) {
+			const g = ghostEls[i];
+			const tx = (i === 0 ? cx : ghostEls[i-1]._x);
+			const ty = (i === 0 ? cy : ghostEls[i-1]._y);
+			g._x = g._x + (tx - g._x) * 0.15;
+			g._y = g._y + (ty - g._y) * 0.15;
+			g.style.left = `${Math.round(g._x)}px`;
+			g.style.top = `${Math.round(g._y)}px`;
+		}
+		ghostRAF = requestAnimationFrame(ghostLoop);
+	}
+	function onGhostMove(e) { cx = e.clientX; cy = e.clientY; if (!ghostRAF && !prefersReduced) ghostRAF = requestAnimationFrame(ghostLoop); }
+	function enableGhostTrail() {
+		if (ghostTrailEnabled) return;
+		if (prefersReduced) return; // honor reduced motion
+		ghostTrailEnabled = true;
+		// Cria ghosts se nenhum
+		if (!ghostEls || !ghostEls.length) {
+			ghostEls = [];
+			for (let i = 0; i < 3; i++) {
+				const g = document.createElement('div');
+				g.className = 'retro-ghost';
+				g._x = -100; g._y = -100;
+				g.style.left = '-100px'; g.style.top = '-100px';
+				document.body.appendChild(g);
+				ghostEls.push(g);
+			}
+		}
+		window.addEventListener('mousemove', onGhostMove, { passive: true });
+		ghostRAF = requestAnimationFrame(ghostLoop);
+	}
+	function disableGhostTrail() {
+		ghostTrailEnabled = false;
+		if (ghostRAF) cancelAnimationFrame(ghostRAF);
+		ghostRAF = 0;
+		window.removeEventListener('mousemove', onGhostMove);
+		ghostEls.forEach(g => { try { g.remove(); } catch {} });
+		ghostEls = [];
+	}
+
 	// Restaura modos persistentes
 	try {
-		if (sessionStorage.getItem('retroMode') === '1') { document.body.classList.add('retro-mode'); updateAboutPhotoForRetro(true); updateLogoForRetro(true); enableRetroCursor(); }
+		if (sessionStorage.getItem('retroMode') === '1') { document.body.classList.add('retro-mode'); updateAboutPhotoForRetro(true); updateLogoForRetro(true); enableGhostTrail(); }
 		if (sessionStorage.getItem('debugMode') === '1') document.body.classList.add('debug-mode');
 	} catch {}
 
