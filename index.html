@@ -126,7 +126,6 @@
             </div>
         </section>
 
-
         <section id="about" class="section about">
             <div class="container">
                 <div class="about-grid">
@@ -161,8 +160,16 @@
         <div class="modal-backdrop" data-close></div>
         <div class="modal-dialog" role="document">
             <button class="modal-close" aria-label="Close" data-close>&times;</button>
-            <button class="modal-prev" aria-label="Previous project" data-prev>‹</button>
-            <button class="modal-next" aria-label="Next project" data-next>›</button>
+            <button class="modal-prev" aria-label="Previous project" data-prev>
+                <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+            <button class="modal-next" aria-label="Next project" data-next>
+                <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
             <div class="modal-content">
                 <div class="modal-media" id="modal-media" aria-hidden="true"></div>
                 <div class="modal-text">
