@@ -541,8 +541,8 @@ body.retro-mode .retro-cursor { animation: bigCursor 17s linear infinite; }
 	.retro-ghost { display: none; }
 }
 
-/* Override IDCAT to use left/top positioning */
-.idcat { left: -9999px; top: -9999px; transform: none !important; }
+/* Override do IDKFA para usar left/top positioning */
+.idkfa { left: -9999px; top: -9999px; transform: none !important; }
 
 /* Debug Overlay (IDDQD) */
 body.debug-mode .card,
@@ -559,8 +559,8 @@ body.debug-mode .thumb::after {
 /* IDCLIP highlight */
 .card.clip-target { outline: 3px solid var(--accent); outline-offset: 2px; }
 
-/* IDCAT follower */
-.idcat {
+/* IDKFA follower */
+.idkfa {
 	position: fixed; left: 0; top: 0; z-index: 2000; pointer-events: none;
 	font-size: 24px; filter: drop-shadow(0 2px 4px rgba(0,0,0,.5));
 	transform: translate(-100px, -100px);

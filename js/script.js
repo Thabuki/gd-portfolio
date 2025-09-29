@@ -421,7 +421,7 @@
 	});
 
 	// ----------------------------------------
-	// Cheats: Konami Code, IDDQD, IDCLIP, IDCAT
+	// Cheats: Konami Code, IDDQD, IDCLIP, IDKFA
 	// ----------------------------------------
 
 	function isTypingContext() {
@@ -540,7 +540,7 @@
 		showToast('IDCLIP OFF');
 	}
 
-	// IDCAT: gatinho segue o cursor
+	// IDKFA: gatinho segue o cursor
 	let catEnabled = false;
 	let catEl = null;
 	let catRAF = 0;
@@ -561,7 +561,7 @@
 		if (catEnabled) return;
 		catEnabled = true;
 		catEl = document.createElement('div');
-		catEl.className = 'idcat';
+		catEl.className = 'idkfa';
 		catEl.setAttribute('aria-hidden', 'true');
 		catEl.textContent = '🐱';
 		document.body.appendChild(catEl);
@@ -573,14 +573,14 @@
 		const onMove = (e) => { targetX = e.clientX + 12; targetY = e.clientY + 12; if (!prefersReduced && !catRAF) catRAF = requestAnimationFrame(catLoop); else catLoop(); };
 		window.addEventListener('mousemove', onMove);
 		catEl._cleanup = () => window.removeEventListener('mousemove', onMove);
-		showToast('IDCAT ON');
+		showToast('IDKFA ON');
 	}
 	function disableCat() {
 		catEnabled = false;
 		if (catRAF) cancelAnimationFrame(catRAF);
 		catRAF = 0;
 		if (catEl) { try { catEl._cleanup?.(); } catch {} catEl.remove(); catEl = null; }
-		showToast('IDCAT OFF');
+		showToast('IDKFA OFF');
 	}
 	function toggleCat() { catEnabled ? disableCat() : enableCat(); }
 
@@ -778,7 +778,7 @@
 			textBufferTimer = setTimeout(() => { textBuffer = ''; }, 3000);
 			if (textBuffer.endsWith('iddqd')) { toggleDebugMode(); textBuffer = ''; return; }
 			if (textBuffer.endsWith('idclip')) { if (!clipActive) activateClip(); else deactivateClip(); textBuffer = ''; return; }
-			if (textBuffer.endsWith('idcat')) { toggleCat(); textBuffer = ''; return; }
+			if (textBuffer.endsWith('idkfa')) { toggleCat(); textBuffer = ''; return; }
 		}
 	});
 
