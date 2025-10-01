@@ -79,7 +79,7 @@
 					],
 					images: [
 						'img/main-games/archer/archer-1.png',
-						'img/main-games/archer/archer-3.jpg',
+						'img/main-games/archer/archer-3.png',
 						'img/main-games/archer/archer-4.jpg',
 						'img/main-games/archer/archer-5.jpg',
 						'img/main-games/archer/archer-6.webp',
