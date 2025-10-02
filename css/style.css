@@ -5,27 +5,27 @@
 	--text: #e6e9ef;
 	--muted: #a9b0bb;
 	--accent: #6ee7f7;
-/* Mild CRT warp + brief horizontal desync jitters */
+/* Warp CRT leve + pequenos jitters horizontais */
 @keyframes crtWarp {
 	0%, 100% { transform: none; }
-	/* brief jitter burst with slightly higher amplitude */
+	/* leve burst de jitter com amplitude ligeiramente maior */
 	12% { transform: translateX(5px); }
 	12.6% { transform: translateX(-4px); }
-	/* one-frame shear to simulate tearing */
+	/* shear de um frame para simular tearing */
 	12.8% { transform: skewX(0.8deg) translateX(-2px); }
 	13% { transform: none; }
 	/* tube warp mid-cycle */
 	50% { transform: skewX(.2deg) skewY(.12deg) scale(1.003); }
-	/* second jitter burst */
+	/* segundo burst de jitter */
 	76% { transform: translateX(-4px); }
 	76.6% { transform: translateX(5px); }
-	/* one-frame shear again */
+	/* shear de um frame novamente */
 	76.8% { transform: skewX(-0.7deg) translateX(2px); }
 	77% { transform: none; }
 }
 	--shadow: 0 10px 30px rgba(0,0,0,.35);
 }
-/* Add rare big glitch (~17s cycle) on top of base warp */
+/* Adiciona big glitch raro (ciclo ~17s) sobre o warp base */
 body.retro-mode .container { animation: crtWarp 3.8s ease-in-out infinite, bigGlitch 17s linear infinite; }
 @keyframes bigGlitch {
 	0%, 96%, 100% { transform: none; filter: none; }
@@ -69,6 +69,7 @@ html { scroll-behavior: smooth; }
 	position: sticky; top: 0; z-index: 50;
 	background: rgba(11, 13, 16, 0.7);
 	backdrop-filter: saturate(140%) blur(8px);
+	-webkit-backdrop-filter: saturate(140%) blur(8px);
 	border-bottom: 1px solid var(--border);
 }
 .header-inner { display: flex; align-items: center; justify-content: space-between; padding: .75rem 0; }
@@ -84,6 +85,9 @@ html { scroll-behavior: smooth; }
 @media (max-width: 900px) {
 	.nav-toggle { display: inline-flex; align-items: center; gap: .5rem; padding: .4rem .6rem; background: var(--panel-2); border: 1px solid var(--border); border-radius: .35rem; color: var(--text); cursor: pointer; }
 	.site-nav .menu { position: absolute; right: 0; top: 2.6rem; background: var(--panel); border: 1px solid var(--border); border-radius: .5rem; padding: .5rem; flex-direction: column; width: max-content; min-width: 180px; }
+	/* Corrige problemas de sticky no mobile usando header fixo e deslocando o conteúdo */
+	.site-header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; }
+	.site-main { padding-top: 64px; }
 }
 
 /* Hero */

@@ -195,7 +195,7 @@
 	const navOrder = cardEls.map(el => el.getAttribute('data-id'));
 	let currentProjectIndex = -1;
 
-		// Ano no footer
+	// Ano no footer
 	const yearEl = qs('#year');
 	if (yearEl) yearEl.textContent = new Date().getFullYear();
 
