@@ -79,7 +79,7 @@
 					],
 					images: [
 						'img/main-games/archer/archer-1.png',
-						'img/main-games/archer/archer-3.png',
+						'img/main-games/archer/archer-3.jpg',
 						'img/main-games/archer/archer-4.jpg',
 						'img/main-games/archer/archer-5.jpg',
 						'img/main-games/archer/archer-6.webp',
@@ -219,6 +219,49 @@
 		window.addEventListener('resize', onResize);
 			onResize();
 
+	// Setar atributos width/height baseados no tamanho intrínseco para reduzir CLS
+	function setIntrinsicDimensions(img) {
+		if (!img) return;
+		const apply = () => {
+			if (img.naturalWidth && img.naturalHeight) {
+				if (!img.getAttribute('width')) img.setAttribute('width', String(img.naturalWidth));
+				if (!img.getAttribute('height')) img.setAttribute('height', String(img.naturalHeight));
+			}
+		};
+		if (img.complete) apply(); else img.addEventListener('load', apply, { once: true });
+	}
+	setIntrinsicDimensions(qs('#about .about-photo img'));
+	setIntrinsicDimensions(qs('header .brand img'));
+
+	// Scroll spy: update aria-current em nav links
+	const navLinks = qsa('.site-nav a[href^="#"]');
+	const sections = navLinks
+		.map((a) => a.getAttribute('href'))
+		.filter((h) => h && h.startsWith('#'))
+		.map((h) => qs(h))
+		.filter(Boolean);
+
+	const spy = () => {
+		let activeId = '';
+		const fromTop = window.scrollY + 80; // header offset
+		for (const sec of sections) {
+			const rect = sec.getBoundingClientRect();
+			const top = rect.top + window.scrollY;
+			if (fromTop >= top && fromTop < top + sec.offsetHeight) {
+				activeId = `#${sec.id}`;
+				break;
+			}
+		}
+		navLinks.forEach((a) => {
+			const isActive = a.getAttribute('href') === activeId;
+			if (isActive) a.setAttribute('aria-current', 'page');
+			else a.removeAttribute('aria-current');
+		});
+	};
+	window.addEventListener('scroll', spy, { passive: true });
+	window.addEventListener('resize', spy, { passive: true });
+	spy();
+
 	// Abre o modal para um id de projeto
 	function openProject(id) {
 		const data = projects[id];
@@ -235,15 +278,15 @@
 			if (id === 'main1') {
 				// Changer Seven
 				modalRole.textContent = 'Game/Level Designer';
-				modalCompany.textContent = 'Gixer Entertainment • Nov 2023 – Oct 2025';
+				modalCompany.textContent = 'Gixer Entertainment • Nov\u00A02023 – Oct\u00A02025';
 			} else if (id === 'main2') {
 				// PAYDAY: meta has company but missing role  
 				modalRole.textContent = 'Level Designer';
-				modalCompany.textContent = 'PopReach Incorporated • Dec 2022 – Aug 2023';
+				modalCompany.textContent = 'PopReach Incorporated • Dec\u00A02022 – Aug\u00A02023';
 			} else if (id === 'main3') {
 				// Archer: meta has company but missing role
 				modalRole.textContent = 'Game Designer';
-				modalCompany.textContent = 'Truly Social Games • Oct 2021 – Nov 2022';
+				modalCompany.textContent = 'Truly Social Games • Oct\u00A02021 – Nov\u00A02022';
 			} else {
 				// For other projects, try to parse the meta field
 				const metaParts = data.meta.split(' • ');
@@ -472,9 +515,13 @@
 		if (!img) return;
 		const normalSrc = 'img/thales.jpg';
 		const retroSrc = 'img/prettysmile.png';
-		// Se estiver ligandodo o modo retrô, troca a imagem
+		// Se estiver ligando o modo retrô, tenta trocar a imagem e adiciona fallback
 		if (enabled) {
-			if (img.getAttribute('src') !== retroSrc) img.setAttribute('src', retroSrc);
+			if (img.getAttribute('src') !== retroSrc) {
+				const onErr = () => { img.src = normalSrc; img.removeEventListener('error', onErr); };
+				img.addEventListener('error', onErr, { once: true });
+				img.setAttribute('src', retroSrc);
+			}
 		} else {
 			if (img.getAttribute('src') !== normalSrc) img.setAttribute('src', normalSrc);
 		}
@@ -487,7 +534,11 @@
 		const normalSrc = 'img/logo.png';
 		const retroSrc = 'img/prettysmile.png';
 		if (enabled) {
-			if (logo.getAttribute('src') !== retroSrc) logo.setAttribute('src', retroSrc);
+			if (logo.getAttribute('src') !== retroSrc) {
+				const onErr = () => { logo.src = normalSrc; logo.removeEventListener('error', onErr); };
+				logo.addEventListener('error', onErr, { once: true });
+				logo.setAttribute('src', retroSrc);
+			}
 		} else {
 			if (logo.getAttribute('src') !== normalSrc) logo.setAttribute('src', normalSrc);
 		}

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0b0d10"/>
+      <stop offset="100%" stop-color="#12151a"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Accent bars -->
+  <rect x="0" y="0" width="1200" height="6" fill="#6ee7f7" opacity="0.9"/>
+  <rect x="0" y="624" width="1200" height="6" fill="#a78bfa" opacity="0.8"/>
+
+  <!-- Logo -->
+  <image href="/img/logo.png" x="72" y="72" height="96" width="96" />
+
+  <!-- Title -->
+  <text x="72" y="230" fill="#e6e9ef" font-family="Inter, Arial, sans-serif" font-weight="800" font-size="70">
+    Thales Rebelo
+  </text>
+  
+  <!-- Subtitle -->
+  <text x="72" y="300" fill="#a9b0bb" font-family="Inter, Arial, sans-serif" font-weight="600" font-size="42">
+    Game Designer
+  </text>
+
+  <!-- URL -->
+  <text x="72" y="560" fill="#a9b0bb" font-family="Inter, Arial, sans-serif" font-weight="400" font-size="34">
+    thalesrebelo.com
+  </text>
+</svg>

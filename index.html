@@ -6,6 +6,23 @@
 		<meta name="description" content="Thales Rebelo - Game Designer" />
 		<title>Thales Rebelo - Game Designer</title>
 
+		<!-- Canonical -->
+		<link rel="canonical" href="https://thalesrebelo.com/" />
+
+		<!-- Open Graph -->
+		<meta property="og:title" content="Thales Rebelo - Game Designer" />
+		<meta property="og:description" content="Thales Rebelo - Game Designer" />
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="https://thalesrebelo.com/" />
+		<meta property="og:image" content="https://thalesrebelo.com/img/thales.jpg" />
+		<meta property="og:image" content="https://thalesrebelo.com/img/social-card.svg" />
+
+		<!-- Twitter Card -->
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content="Thales Rebelo - Game Designer" />
+		<meta name="twitter:description" content="Thales Rebelo - Game Designer" />
+		<meta name="twitter:image" content="https://thalesrebelo.com/img/thales.jpg" />
+
 		<!-- Favicons -->
 		<link rel="apple-touch-icon" sizes="180x180" href="img/favicon/apple-touch-icon.png" />
 		<link rel="icon" type="image/png" sizes="32x32" href="img/favicon/favicon-32x32.png" />
@@ -18,12 +35,31 @@
 		<!-- Styles -->
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link rel="preconnect" href="https://www.youtube-nocookie.com" />
+		<link rel="preconnect" href="https://img.youtube.com" />
 
 		<link
 			href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap"
 			rel="stylesheet"
 		/>
+		<!-- Preload main stylesheet for faster first paint -->
+		<link rel="preload" as="style" href="./css/style.css" />
 		<link rel="stylesheet" href="./css/style.css" />
+
+		<!-- Structured data -->
+		<script type="application/ld+json">
+		{
+			"@context": "https://schema.org",
+			"@type": "Person",
+			"name": "Thales Rebelo",
+			"jobTitle": "Game Designer",
+			"url": "https://thalesrebelo.com/",
+			"sameAs": [
+				"https://thabuki.github.io/gd-portfolio",
+				"https://www.linkedin.com/in/thalesrebelo/"
+			]
+		}
+		</script>
 	</head>
 
 	<!-- IDDQD, IDKFA, IDCLIP, Konami Code...? -->
@@ -35,7 +71,7 @@
 		<header class="site-header" role="banner">
 			<div class="container header-inner">
 				<a class="brand" href="#top" aria-label="Back to top">
-					<img src="img/logo.png" alt="Thales Rebelo logo" />
+					<img src="img/logo.png" alt="Thales Rebelo logo" decoding="async" fetchpriority="high" />
 				</a>
 				<nav class="site-nav" aria-label="Primary">
 					<button
@@ -90,7 +126,7 @@
 							<div class="card-body">
 								<h3 class="card-title">Changer Seven</h3>
 								<p class="card-role">Game/Level Designer</p>
-								<p class="card-meta">Gixer Entertainment • Nov 2023 – Oct 2025</p>
+								<p class="card-meta">Gixer Entertainment • Nov&nbsp;2023 – Oct&nbsp;2025</p>
 							</div>
 						</article>
 
@@ -99,7 +135,7 @@
 							<div class="card-body">
 								<h3 class="card-title">PAYDAY Crime War</h3>
 								<p class="card-role">Level Designer</p>
-								<p class="card-meta">PopReach Incorporated • Dec 2022 – Aug 2023</p>
+								<p class="card-meta">PopReach Incorporated • Dec&nbsp;2022 – Aug&nbsp;2023</p>
 							</div>
 						</article>
 
@@ -108,7 +144,7 @@
 							<div class="card-body">
 								<h3 class="card-title">Archer: DANGER PHONE</h3>
 								<p class="card-role">Game Designer</p>
-								<p class="card-meta">Truly Social Games • Oct 2021 – Nov 2022</p>
+								<p class="card-meta">Truly Social Games • Oct&nbsp;2021 – Nov&nbsp;2022</p>
 							</div>
 						</article>
 					</div>
@@ -133,7 +169,7 @@
 							<div class="card-body">
 								<h3 class="card-title">BORKSPEL</h3>
 								<p class="card-role">Designer/Programmer</p>
-								<p class="card-meta">Jul 2018 – Oct 2018</p>
+								<p class="card-meta">Jul&nbsp;2018 – Oct&nbsp;2018</p>
 							</div>
 						</article>
 
@@ -142,7 +178,7 @@
 							<div class="card-body">
 								<h3 class="card-title">Wrong</h3>
 								<p class="card-role">Director/Editor</p>
-								<p class="card-meta">Oct 2017 – Dec 2017</p>
+								<p class="card-meta">Oct&nbsp;2017 – Dec&nbsp;2017</p>
 							</div>
 						</article>
 
@@ -151,7 +187,7 @@
 							<div class="card-body">
 								<h3 class="card-title">The Omni Crusher</h3>
 								<p class="card-role">Ergonomics Designer</p>
-								<p class="card-meta">Mar 2016 – Dec 2016</p>
+								<p class="card-meta">Mar&nbsp;2016 – Dec&nbsp;2016</p>
 							</div>
 						</article>
 					</div>
