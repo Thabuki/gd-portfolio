@@ -176,6 +176,7 @@
 				}
 	};
 
+
 	const qs = (sel, el = document) => el.querySelector(sel);
 	const qsa = (sel, el = document) => Array.from(el.querySelectorAll(sel));
 
@@ -210,6 +211,7 @@
 		});
 		menu.hidden = true; // começa hidden em telas pequenas
 	}
+
 		// Garante que o menu fique visível ao redimensionar para desktop
 		const mql = window.matchMedia('(min-width: 901px)');
 		const onResize = () => { if (menu) menu.hidden = !mql.matches && (qs('.nav-toggle')?.getAttribute('aria-expanded') !== 'true'); };
@@ -226,7 +228,7 @@
 
 		// preenche o conteúdo
 		title.textContent = data.title || '';
-		
+
 		// Parse meta to extract role and company based on project patterns
 		if (data.meta) {
 			// Handle different meta patterns based on the project ID
@@ -257,7 +259,7 @@
 			modalRole.textContent = '';
 			modalCompany.textContent = '';
 		}
-		
+
 		body.innerHTML = '';
 		links.innerHTML = '';
 		media.innerHTML = '';
