@@ -313,7 +313,7 @@
         modalCompany.textContent =
           "Truly Social Games • Oct\u00A02021 – Nov\u00A02022";
       } else {
-        // For other projects, try to parse the meta field
+        // Para outros projetos, tenta dividir por " • "
         const metaParts = data.meta.split(" • ");
         if (metaParts.length >= 2) {
           modalRole.textContent = metaParts[0];
