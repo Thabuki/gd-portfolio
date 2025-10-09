@@ -33,8 +33,10 @@
       // O vídeo pode ser uma URL do YouTube ou um arquivo local
       video: "https://youtu.be/9KvM1tEteXU",
       links: [
-        // { label: 'Website', href: '#' },
-        // { label: 'Trailer', href: '#' }
+        {
+          label: "View on Steam",
+          href: "https://store.steampowered.com/app/2069330/Changer_Seven/",
+        },
       ],
     },
     main2: {
