@@ -47,11 +47,11 @@
 
   --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
 }
-/* Adiciona big glitch raro (ciclo ~17s) sobre o warp base */
-body.retro-mode .container {
-  animation: crtWarp 3.8s ease-in-out infinite, bigGlitch 17s linear infinite;
+/* Adiciona giga glitch raro (ciclo ~17s) sobre o warp base */
+body.pretty-smile-mode .container {
+  animation: crtWarp 3.8s ease-in-out infinite, gigaGlitch 17s linear infinite;
 }
-@keyframes bigGlitch {
+@keyframes gigaGlitch {
   0%,
   96%,
   100% {
@@ -681,16 +681,16 @@ body::-webkit-scrollbar-thumb:hover,
 }
 
 /* ===================== Cheats ===================== */
-/* Retro Mode (Konami Code) */
-body.retro-mode {
+/* Pretty Smile Mode (Konami Code) */
+body.pretty-smile-mode {
   position: relative;
 }
-body.retro-mode {
+body.pretty-smile-mode {
   filter: saturate(140%) contrast(120%) hue-rotate(-18deg) brightness(1.05);
   animation: crtFlicker 2.8s infinite steps(2, end);
 }
 /* Vignette + TV de tubo fraca */
-body.retro-mode::before {
+body.pretty-smile-mode::before {
   content: "";
   position: fixed;
   inset: 0;
@@ -703,7 +703,7 @@ body.retro-mode::before {
   );
 }
 /* Scanlines com um pouco de drift */
-body.retro-mode::after {
+body.pretty-smile-mode::after {
   content: "";
   position: fixed;
   inset: 0;
@@ -718,9 +718,9 @@ body.retro-mode::after {
   );
   mix-blend-mode: overlay;
   animation: scanScroll 6s linear infinite;
-  animation: scanScroll 6s linear infinite, bigScan 17s steps(1, end) infinite;
+  animation: scanScroll 6s linear infinite, gigaScan 17s steps(1, end) infinite;
 }
-@keyframes bigScan {
+@keyframes gigaScan {
   0%,
   96%,
   100% {
@@ -737,16 +737,16 @@ body.retro-mode::after {
   }
 }
 /* Chromatic aberration em headings/titles */
-body.retro-mode .hero h1,
-body.retro-mode .card-title,
-body.retro-mode h2,
-body.retro-mode h3 {
+body.pretty-smile-mode .hero h1,
+body.pretty-smile-mode .card-title,
+body.pretty-smile-mode h2,
+body.pretty-smile-mode h3 {
   text-shadow: 1px 0 0 rgba(255, 0, 92, 0.45), -1px 0 0 rgba(0, 255, 255, 0.45),
     0 0 6px rgba(110, 231, 247, 0.25);
-  /* Sync um chromatic extra com o ciclo raro de big glitch */
-  animation: bigChrom 17s linear infinite;
+  /* Sync um chromatic extra com o ciclo raro de giga glitch */
+  animation: gigaChrom 17s linear infinite;
 }
-@keyframes bigChrom {
+@keyframes gigaChrom {
   0%,
   96%,
   100% {
@@ -767,8 +767,8 @@ body.retro-mode h3 {
   }
 }
 /* Pixelar conteúdo <img> (modal/media) */
-body.retro-mode img,
-body.retro-mode video {
+body.pretty-smile-mode img,
+body.pretty-smile-mode video {
   image-rendering: pixelated;
 }
 /* Distorção CRT + pequenos jitters horizontais */
@@ -820,37 +820,37 @@ body.retro-mode video {
     background-position-y: 4px;
   }
 }
-body.retro-mode .container {
+body.pretty-smile-mode .container {
   animation: crtWarp 3.8s ease-in-out infinite;
 }
 @media (prefers-reduced-motion: reduce) {
-  body.retro-mode {
+  body.pretty-smile-mode {
     filter: saturate(120%) contrast(110%) hue-rotate(-8deg);
     animation: none;
   }
-  body.retro-mode::after {
+  body.pretty-smile-mode::after {
     animation: none;
   }
-  body.retro-mode .container {
+  body.pretty-smile-mode .container {
     animation: none;
   }
-  body.retro-mode .brand img {
+  body.pretty-smile-mode .brand img {
     animation: none;
   }
 }
 
 /* Bloom em elementos UI com brightness alta */
-body.retro-mode .modal-links a {
+body.pretty-smile-mode .modal-links a {
   box-shadow: 0 0 10px rgba(110, 231, 247, 0.55),
     0 0 24px rgba(110, 231, 247, 0.28);
   filter: saturate(130%);
 }
-body.retro-mode .brand {
+body.pretty-smile-mode .brand {
   text-shadow: 0 0 8px rgba(110, 231, 247, 0.35),
     0 0 16px rgba(167, 139, 250, 0.22);
 }
 /* Brilho CRT discreto na logo + sync com o pulso do glitch */
-body.retro-mode .brand img {
+body.pretty-smile-mode .brand img {
   filter: saturate(130%) contrast(115%)
     drop-shadow(0 0 8px rgba(110, 231, 247, 0.35))
     drop-shadow(0 0 14px rgba(167, 139, 250, 0.22));
@@ -888,17 +888,17 @@ body.retro-mode .brand img {
     transform: none;
   }
 }
-body.retro-mode .site-nav a:hover,
-body.retro-mode .site-nav a:focus {
+body.pretty-smile-mode .site-nav a:hover,
+body.pretty-smile-mode .site-nav a:focus {
   box-shadow: 0 0 8px rgba(167, 139, 250, 0.3);
 }
-body.retro-mode .card:hover {
+body.pretty-smile-mode .card:hover {
   box-shadow: 0 0 0 1px rgba(110, 231, 247, 0.35),
     0 0 22px rgba(110, 231, 247, 0.15);
 }
 
 /* Máscara de scanline suave sobre o diálogo modal quando aberto */
-body.retro-mode .modal[aria-hidden="false"] .modal-dialog::after {
+body.pretty-smile-mode .modal[aria-hidden="false"] .modal-dialog::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -970,11 +970,11 @@ body.retro-mode .modal[aria-hidden="false"] .modal-dialog::after {
     0 0 20px rgba(110, 231, 247, 0.35);
 }
 
-/* Big glitch sync pulse */
-body.retro-mode .retro-cursor {
-  animation: bigCursor 17s linear infinite;
+/* Giga glitch sync pulse */
+body.pretty-smile-mode .retro-cursor {
+  animation: gigaCursor 17s linear infinite;
 }
-@keyframes bigCursor {
+@keyframes gigaCursor {
   0%,
   96%,
   100% {

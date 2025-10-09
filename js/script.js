@@ -259,7 +259,7 @@
   setIntrinsicDimensions(qs("#about .about-photo img"));
   setIntrinsicDimensions(qs("header .brand img"));
 
-  // Scroll spy: update aria-current em nav links
+  // Scroll spy: atualiza aria-current nos links de navegação
   const navLinks = qsa('.site-nav a[href^="#"]');
   const sections = navLinks
     .map((a) => a.getAttribute("href"))
@@ -269,7 +269,7 @@
 
   const spy = () => {
     let activeId = "";
-    const fromTop = window.scrollY + 80; // header offset
+    const fromTop = window.scrollY + 80; // offset do header
     for (const sec of sections) {
       const rect = sec.getBoundingClientRect();
       const top = rect.top + window.scrollY;
@@ -298,21 +298,21 @@
     // preenche o conteúdo
     title.textContent = data.title || "";
 
-    // Parse meta to extract role and company based on project patterns
+    // Faz parse dos metadados para extrair função e empresa baseado nos padrões do projeto
     if (data.meta) {
-      // Handle different meta patterns based on the project ID
+      // Lida com diferentes padrões de metadados baseado no ID do projeto
       if (id === "main1") {
         // Changer Seven
         modalRole.textContent = "Game/Level Designer";
         modalCompany.textContent =
           "Gixer Entertainment • Nov\u00A02023 – Oct\u00A02025";
       } else if (id === "main2") {
-        // PAYDAY: meta has company but missing role
+        // PAYDAY: meta tem empresa mas falta função
         modalRole.textContent = "Level Designer";
         modalCompany.textContent =
           "PopReach Incorporated • Dec\u00A02022 – Aug\u00A02023";
       } else if (id === "main3") {
-        // Archer: meta has company but missing role
+        // Archer: meta tem empresa mas falta função
         modalRole.textContent = "Game Designer";
         modalCompany.textContent =
           "Truly Social Games • Oct\u00A02021 – Nov\u00A02022";
@@ -467,7 +467,7 @@
   // Vincula a abertura nos cards
   qsa(".card[data-id]").forEach((card) => {
     const id = card.getAttribute("data-id");
-    // initial thumbnails from inline data
+    // thumbnails iniciais vindas dos dados inline
     try {
       const data = projects[id];
       if (data) setCardThumb(card, data);
@@ -510,7 +510,7 @@
   });
 
   // ----------------------------------------
-  // Cheats: Konami Code, IDDQD, IDCLIP, IDKFA
+  // Cheat: Konami Code (Pretty Smile Mode)
   // ----------------------------------------
 
   function isTypingContext() {
@@ -570,21 +570,21 @@
     t._hideTimer = setTimeout(() => t.classList.remove("show"), 1600);
   }
 
-  // Helper: trocar a foto do "Sobre mim" no modo retrô
-  function updateAboutPhotoForRetro(enabled) {
+  // Helper: trocar a foto do "Sobre mim" no Pretty Smile Mode
+  function updateAboutPhotoForPrettySmile(enabled) {
     const img = qs("#about .about-photo img");
     if (!img) return;
     const normalSrc = "img/thales.jpg";
-    const retroSrc = "img/prettysmile.png";
-    // Se estiver ligando o modo retrô, tenta trocar a imagem e adiciona fallback
+    const prettySmileSrc = "img/prettysmile.png";
+    // Se estiver ligando o Pretty Smile Mode, tenta trocar a imagem e adiciona fallback
     if (enabled) {
-      if (img.getAttribute("src") !== retroSrc) {
+      if (img.getAttribute("src") !== prettySmileSrc) {
         const onErr = () => {
           img.src = normalSrc;
           img.removeEventListener("error", onErr);
         };
         img.addEventListener("error", onErr, { once: true });
-        img.setAttribute("src", retroSrc);
+        img.setAttribute("src", prettySmileSrc);
       }
     } else {
       if (img.getAttribute("src") !== normalSrc)
@@ -592,20 +592,20 @@
     }
   }
 
-  // Helper: trocar a logo do header no modo retrô
-  function updateLogoForRetro(enabled) {
+  // Helper: trocar a logo do header no Pretty Smile Mode
+  function updateLogoForPrettySmile(enabled) {
     const logo = qs("header .brand img");
     if (!logo) return;
     const normalSrc = "img/logo.png";
-    const retroSrc = "img/prettysmile.png";
+    const prettySmileSrc = "img/prettysmile.png";
     if (enabled) {
-      if (logo.getAttribute("src") !== retroSrc) {
+      if (logo.getAttribute("src") !== prettySmileSrc) {
         const onErr = () => {
           logo.src = normalSrc;
           logo.removeEventListener("error", onErr);
         };
         logo.addEventListener("error", onErr, { once: true });
-        logo.setAttribute("src", retroSrc);
+        logo.setAttribute("src", prettySmileSrc);
       }
     } else {
       if (logo.getAttribute("src") !== normalSrc)
@@ -613,125 +613,106 @@
     }
   }
 
-  // Konami Code: Retro Mode
-  function setRetroMode(enabled) {
-    document.body.classList.toggle("retro-mode", !!enabled);
+  // Konami Code: Pretty Smile Mode
+  function setPrettySmileMode(enabled) {
+    document.body.classList.toggle("pretty-smile-mode", !!enabled);
     try {
-      sessionStorage.setItem("retroMode", enabled ? "1" : "0");
+      sessionStorage.setItem("prettySmileMode", enabled ? "1" : "0");
     } catch {}
-    updateAboutPhotoForRetro(enabled);
-    updateLogoForRetro(enabled);
-    if (enabled) enableGhostTrail();
-    else disableGhostTrail();
+    updateAboutPhotoForPrettySmile(enabled);
+    updateLogoForPrettySmile(enabled);
+    if (enabled) {
+      enablePrettysmile();
+    } else {
+      disablePrettysmile();
+    }
     showToast(`Pretty Smile Mode ${enabled ? "ON" : "OFF"}`);
   }
-  function toggleRetroMode() {
-    setRetroMode(!document.body.classList.contains("retro-mode"));
+  function togglePrettySmileMode() {
+    setPrettySmileMode(!document.body.classList.contains("pretty-smile-mode"));
   }
 
-  // IDDQD: Debug Overlay
-  function setDebugMode(enabled) {
-    document.body.classList.toggle("debug-mode", !!enabled);
-    try {
-      sessionStorage.setItem("debugMode", enabled ? "1" : "0");
-    } catch {}
-    showToast(`Debug Overlay ${enabled ? "ON" : "OFF"}`);
-  }
-  function toggleDebugMode() {
-    setDebugMode(!document.body.classList.contains("debug-mode"));
-  }
-
-  // IDCLIP: keyboard navega pelos cards, enter seleciona eles
-  let clipActive = false;
-  let clipIndex = 0;
-  function highlightClipTarget() {
-    qsa(".card.clip-target").forEach((el) =>
-      el.classList.remove("clip-target")
-    );
-    const targetId = navOrder[clipIndex];
-    const el = qsa(`.card[data-id="${CSS.escape(targetId)}"]`)[0];
-    if (el) {
-      el.classList.add("clip-target");
-      el.scrollIntoView({ block: "nearest", behavior: "smooth" });
-    }
-  }
-  function activateClip() {
-    if (!navOrder.length) return;
-    clipActive = true;
-    clipIndex = Math.max(0, currentProjectIndex >= 0 ? currentProjectIndex : 0);
-    highlightClipTarget();
-    showToast("IDCLIP ON — Arrows move, Enter opens, Esc exits");
-  }
-  function deactivateClip() {
-    clipActive = false;
-    qsa(".card.clip-target").forEach((el) =>
-      el.classList.remove("clip-target")
-    );
-    showToast("IDCLIP OFF");
-  }
-
-  // IDKFA: gatinho segue o cursor
-  let catEnabled = false;
-  let catEl = null;
-  let catRAF = 0;
+  // Pretty Smile follower (part of Konami Code/Pretty Smile Mode)
+  let prettysmileEnabled = false;
+  let prettysmileEl = null;
+  let prettysmileRAF = 0;
   let targetX = 0,
     targetY = 0;
-  let catX = 0,
-    catY = 0;
+  let prettysmileX = 0,
+    prettysmileY = 0;
   const prefersReduced = window.matchMedia(
     "(prefers-reduced-motion: reduce)"
   ).matches;
-  function catLoop() {
-    if (!catEnabled || !catEl) return;
+  function prettysmileLoop() {
+    if (!prettysmileEnabled || !prettysmileEl) return;
     const lerp = prefersReduced ? 1 : 0.15;
-    catX = catX + (targetX - catX) * lerp;
-    catY = catY + (targetY - catY) * lerp;
+    prettysmileX = prettysmileX + (targetX - prettysmileX) * lerp;
+    prettysmileY = prettysmileY + (targetY - prettysmileY) * lerp;
     // Usar left/top para evitar problemas com scroll e conflitos com transform do CSS
-    catEl.style.left = `${Math.round(catX)}px`;
-    catEl.style.top = `${Math.round(catY)}px`;
-    catRAF = requestAnimationFrame(catLoop);
+    prettysmileEl.style.left = `${Math.round(prettysmileX)}px`;
+    prettysmileEl.style.top = `${Math.round(prettysmileY)}px`;
+    prettysmileRAF = requestAnimationFrame(prettysmileLoop);
   }
-  function enableCat() {
-    if (catEnabled) return;
-    catEnabled = true;
-    catEl = document.createElement("div");
-    catEl.className = "idkfa";
-    catEl.setAttribute("aria-hidden", "true");
-    catEl.textContent = "🐱";
-    document.body.appendChild(catEl);
+  function enablePrettysmile() {
+    if (prettysmileEnabled) return;
+    prettysmileEnabled = true;
+    prettysmileEl = document.createElement("img");
+    prettysmileEl.className = "idkfa";
+    prettysmileEl.setAttribute("aria-hidden", "true");
+    prettysmileEl.src = "img/prettysmile.png";
+    prettysmileEl.alt = "Pretty Smile";
+    prettysmileEl.style.width = "32px";
+    prettysmileEl.style.height = "32px";
+    document.body.appendChild(prettysmileEl);
     // Init offscreen e limpa qualquer transform vindo do CSS
-    catX = -100;
-    catY = -100;
+    prettysmileX = -100;
+    prettysmileY = -100;
     targetX = -100;
     targetY = -100;
-    catEl.style.left = `${catX}px`;
-    catEl.style.top = `${catY}px`;
-    catEl.style.transform = "none";
-    const onMove = (e) => {
-      targetX = e.clientX + 12;
-      targetY = e.clientY + 12;
-      if (!prefersReduced && !catRAF) catRAF = requestAnimationFrame(catLoop);
-      else catLoop();
+    prettysmileEl.style.left = `${prettysmileX}px`;
+    prettysmileEl.style.top = `${prettysmileY}px`;
+    prettysmileEl.style.transform = "none";
+
+    // Armazena a posição do mouse relativa à viewport
+    let clientX = 0,
+      clientY = 0;
+
+    const updateTarget = () => {
+      targetX = clientX + window.scrollX + 12;
+      targetY = clientY + window.scrollY + 12;
+      if (!prefersReduced && !prettysmileRAF)
+        prettysmileRAF = requestAnimationFrame(prettysmileLoop);
+      else prettysmileLoop();
     };
+
+    const onMove = (e) => {
+      clientX = e.clientX;
+      clientY = e.clientY;
+      updateTarget();
+    };
+
+    const onScroll = () => {
+      updateTarget();
+    };
+
     window.addEventListener("mousemove", onMove);
-    catEl._cleanup = () => window.removeEventListener("mousemove", onMove);
-    showToast("IDKFA ON");
+    window.addEventListener("scroll", onScroll, { passive: true });
+    prettysmileEl._cleanup = () => {
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("scroll", onScroll);
+    };
   }
-  function disableCat() {
-    catEnabled = false;
-    if (catRAF) cancelAnimationFrame(catRAF);
-    catRAF = 0;
-    if (catEl) {
+  function disablePrettysmile() {
+    prettysmileEnabled = false;
+    if (prettysmileRAF) cancelAnimationFrame(prettysmileRAF);
+    prettysmileRAF = 0;
+    if (prettysmileEl) {
       try {
-        catEl._cleanup?.();
+        prettysmileEl._cleanup?.();
       } catch {}
-      catEl.remove();
-      catEl = null;
+      prettysmileEl.remove();
+      prettysmileEl = null;
     }
-    showToast("IDKFA OFF");
-  }
-  function toggleCat() {
-    catEnabled ? disableCat() : enableCat();
   }
 
   // Retro Mode custom cursor (CRT crosshair + extras)
@@ -888,72 +869,13 @@
     ghostEls = [];
   }
 
-  // Cursor trail fantasma (sem o cursor customizado)
-  let ghostTrailEnabled = false;
-  let ghostRAF = 0;
-  function ghostLoop() {
-    if (!ghostTrailEnabled) return;
-    for (let i = 0; i < ghostEls.length; i++) {
-      const g = ghostEls[i];
-      const tx = i === 0 ? cx : ghostEls[i - 1]._x;
-      const ty = i === 0 ? cy : ghostEls[i - 1]._y;
-      g._x = g._x + (tx - g._x) * 0.15;
-      g._y = g._y + (ty - g._y) * 0.15;
-      g.style.left = `${Math.round(g._x)}px`;
-      g.style.top = `${Math.round(g._y)}px`;
-    }
-    ghostRAF = requestAnimationFrame(ghostLoop);
-  }
-  function onGhostMove(e) {
-    cx = e.clientX;
-    cy = e.clientY;
-    if (!ghostRAF && !prefersReduced)
-      ghostRAF = requestAnimationFrame(ghostLoop);
-  }
-  function enableGhostTrail() {
-    if (ghostTrailEnabled) return;
-    if (prefersReduced) return; // honor reduced motion
-    ghostTrailEnabled = true;
-    // Cria ghosts se nenhum
-    if (!ghostEls || !ghostEls.length) {
-      ghostEls = [];
-      for (let i = 0; i < 3; i++) {
-        const g = document.createElement("div");
-        g.className = "retro-ghost";
-        g._x = -100;
-        g._y = -100;
-        g.style.left = "-100px";
-        g.style.top = "-100px";
-        document.body.appendChild(g);
-        ghostEls.push(g);
-      }
-    }
-    window.addEventListener("mousemove", onGhostMove, { passive: true });
-    ghostRAF = requestAnimationFrame(ghostLoop);
-  }
-  function disableGhostTrail() {
-    ghostTrailEnabled = false;
-    if (ghostRAF) cancelAnimationFrame(ghostRAF);
-    ghostRAF = 0;
-    window.removeEventListener("mousemove", onGhostMove);
-    ghostEls.forEach((g) => {
-      try {
-        g.remove();
-      } catch {}
-    });
-    ghostEls = [];
-  }
-
   // Restaura modos persistentes
   try {
-    if (sessionStorage.getItem("retroMode") === "1") {
-      document.body.classList.add("retro-mode");
-      updateAboutPhotoForRetro(true);
-      updateLogoForRetro(true);
-      enableGhostTrail();
+    if (sessionStorage.getItem("prettySmileMode") === "1") {
+      document.body.classList.add("pretty-smile-mode");
+      updateAboutPhotoForPrettySmile(true);
+      updateLogoForPrettySmile(true);
     }
-    if (sessionStorage.getItem("debugMode") === "1")
-      document.body.classList.add("debug-mode");
   } catch {}
 
   // Key handling global para cheats
@@ -966,7 +888,7 @@
     if (keyBuffer.length > MAX_KEYBUF) keyBuffer.shift();
     if (endsWithKonami(keyBuffer)) {
       // Opcional: permitir Enter para finalizar, mas alternar apenas na sequência
-      toggleRetroMode();
+      togglePrettySmileMode();
       keyBuffer.length = 0; // reset
       return;
     }
@@ -979,58 +901,6 @@
       textBufferTimer = setTimeout(() => {
         textBuffer = "";
       }, 3000);
-      if (textBuffer.endsWith("iddqd")) {
-        toggleDebugMode();
-        textBuffer = "";
-        return;
-      }
-      if (textBuffer.endsWith("idclip")) {
-        if (!clipActive) activateClip();
-        else deactivateClip();
-        textBuffer = "";
-        return;
-      }
-      if (textBuffer.endsWith("idkfa")) {
-        toggleCat();
-        textBuffer = "";
-        return;
-      }
-    }
-  });
-
-  // Setinhas para navegação no IDCLIP
-  window.addEventListener("keydown", (e) => {
-    if (!clipActive) return;
-    if (modal.getAttribute("aria-hidden") === "false") return; // ignore when modal open
-    const k = normKey(e);
-    if (k === "escape") {
-      deactivateClip();
-      return;
-    }
-    if (k === "enter" || k === " ") {
-      e.preventDefault();
-      const id = navOrder[clipIndex];
-      const el = qsa(`.card[data-id="${CSS.escape(id)}"]`)[0];
-      el?.click();
-      return;
-    }
-    const colsDesktop = 3; // default da grid principal, mas navegamos linearmente pelo índice usando left/right +/-1, up/down +/- cols
-    if (k === "arrowleft") {
-      e.preventDefault();
-      clipIndex = Math.max(0, clipIndex - 1);
-      highlightClipTarget();
-    } else if (k === "arrowright") {
-      e.preventDefault();
-      clipIndex = Math.min(navOrder.length - 1, clipIndex + 1);
-      highlightClipTarget();
-    } else if (k === "arrowup") {
-      e.preventDefault();
-      clipIndex = Math.max(0, clipIndex - colsDesktop);
-      highlightClipTarget();
-    } else if (k === "arrowdown") {
-      e.preventDefault();
-      clipIndex = Math.min(navOrder.length - 1, clipIndex + colsDesktop);
-      highlightClipTarget();
     }
   });
 
