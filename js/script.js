@@ -123,7 +123,9 @@
         "img/side-projects/ghoulf/ghoulf-6.webp",
       ],
       video: "",
-      links: [],
+      links: [
+        { label: "Play on itch.io", href: "https://daellot.itch.io/ghoulf" },
+      ],
     },
     jam2: {
       title: "BORKSPEL",
@@ -619,7 +621,7 @@
     updateLogoForRetro(enabled);
     if (enabled) enableGhostTrail();
     else disableGhostTrail();
-    showToast(`Retro Mode ${enabled ? "ON" : "OFF"}`);
+    showToast(`Pretty Smile Mode ${enabled ? "ON" : "OFF"}`);
   }
   function toggleRetroMode() {
     setRetroMode(!document.body.classList.contains("retro-mode"));
