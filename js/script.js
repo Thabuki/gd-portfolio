@@ -31,7 +31,7 @@
         "img/main-games/changer/changer-9.jpg",
       ],
       // O vídeo pode ser uma URL do YouTube ou um arquivo local
-      video: "https://youtu.be/9KvM1tEteXU",
+      video: "https://youtu.be/hpGGYigkXLk",
       links: [
         {
           label: "View on Steam",
