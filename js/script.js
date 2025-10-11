@@ -102,11 +102,15 @@
       summary:
         "Third-person isometric minigolf-esque puzzle game made in Unity over 2 days for GMTK 2021. Help a misplaced soul in Hell reunite with its body and escape.",
       experience: [
-        "Designed levels, from paper to engine implementation",
-        "Fine-tuned difficulty and gameplay aspects throughout development",
-        "Playtested extensively to create a cohesive difficulty curve",
-        "Defined scoring ranges for a 3-star rating system",
-        "GMTK 2021 rankings (of 5,674): Presentation #31, Overall #86, Originality #229, Fun #336",
+  "Designed nine puzzle-arena stages centered on the ‘haunting golf’ mechanic, where players possess objects to redirect shots and trigger chain reactions.",
+  "Built all levels in Unity using modular tiles and tight space constraints to support quick learning and discovery.",
+  "Maintained continuous iteration through internal playtests with the 6-person jam team, refining level readability, pacing, and ‘aha!’ flow moments.",
+  "Established ‘dev scores’ internally to benchmark designer performance and guide balance decisions, even though they were not included in the public build.",
+  "Contributed to layout composition and camera readability to ensure smooth flow despite high-contrast visuals.",
+  "Collaborated across design, programming, art, and audio disciplines to achieve a cohesive tone within the 48-hour scope.",
+  "Prioritized player clarity and momentum over precision, resulting in approachable yet expressive level design.",
+  "GMTK 2021 rankings (of 5,674): Presentation #31 · Overall #86 · Originality #229 · Fun #336",
+  "Earned community recognition for unique mechanic interpretation and environmental humor."
       ],
       images: [
         "img/side-projects/ghoulf/ghoulf-1.webp",
@@ -127,9 +131,14 @@
       summary:
         "Online head-to-head competitive VR game for PC where two players race to assemble furniture in a set time, fighting for their job—and their lives.",
       experience: [
-        "Designed and implemented gameplay systems and interactions in Unity",
-        "Focused on head-to-head competitive pacing and clarity for VR",
-        "Developed core loop around time pressure and performance feedback",
+  "Designed and developed a furniture-assembly simulation in Unity (C#), focused on spatial reasoning, precision, and motion fluidity.",
+  "Implemented the core assembly system, allowing players to pick up, rotate, and snap parts together with intuitive physics and visual feedback.",
+  "Crafted a comically eerie tone embodied in the project’s motto — ‘Assemble or be Assembled.’",
+  "Tuned the camera system extensively to minimize motion sickness, a central design concern throughout production.",
+  "Created clear UI prompts and visual guides to ease the player’s understanding of part orientation and connection logic.",
+  "Iterated on level layout and object hierarchy to improve readability and progressive complexity.",
+  "Worked closely with collaborators to balance scope, playability, and thematic tone.",
+  "Reflected on key lessons in object manipulation design, ergonomic camera systems, and player comfort — shaping future design work."
       ],
       images: [
         "img/side-projects/borkspel/borkspel-1.webp",
@@ -149,10 +158,11 @@
       summary:
         "Cinematic created using GTA V's Rockstar Editor, telling the story of two modern-time outlaws and their big score that goes right—mostly.",
       experience: [
-        "Storyboarded, captured, and edited scenes using Rockstar Editor",
-        "Final edit and post-production in Adobe Premiere",
-        "Focused on framing, pacing, and narrative clarity",
-        "Note: video embed might not be working properly due to copyrighted music",
+  "Directed and edited a short experimental action film exploring perception and self-deception through synchronized action and music.",
+  "Created in collaboration with another actor (player), where both performance and camera perspective were designed to mirror tension and rhythm.",
+  "Went through multiple iterative versions, applying direct professor feedback on pacing, framing, and emotional tone.",
+  "Structured the sequence so the physical action follows the musical rhythm, emphasizing synchronization over dialogue.",
+  "Served as an early deep dive into the fundamentals of filming, camera control, and sound editing — a major hands-on learning milestone."
       ],
       images: [
         "img/side-projects/wrong/wrong-1.jpg",
@@ -168,9 +178,12 @@
       summary:
         "Physical working prototype from a year-long investigation into ergonomic arcade interfaces for fighting games.",
       experience: [
-        "Conducted ergonomic studies and iterative hardware revisions",
-        "Applied user-centered design and HCI methodology",
-        "Informed decisions through ongoing market research",
+  "Conceived and designed a fictional industrial crushing machine as part of an advanced ergonomics and design project.",
+  "Every element — from prototype to final version — was entirely hand-made, including physical mock-ups, control panels, and mechanical interfaces.",
+  "The process involved multiple people and their hands, focusing on creating a universally ergonomic product adaptable to different body types.",
+  "Developed a comprehensive business model outlining production feasibility and target market positioning.",
+  "Authored a detailed production manual, covering assembly steps, operation safety, and quality standards.",
+  "Achieved a final grade of 9.9, highlighting excellence in design execution, ergonomics, and presentation."
       ],
       images: [
         // A primeira imagem vira a thumbnail do card e a primeira no modal
