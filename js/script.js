@@ -408,7 +408,7 @@
     if (videoId) {
       const wrap = document.createElement("div");
       wrap.className = "video-wrap";
-      wrap.innerHTML = `<iframe class="video-frame" width="560" height="315" src="https://www.youtube-nocookie.com/embed/${videoId}?modestbranding=1&rel=0&wmode=opaque" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
+      wrap.innerHTML = `<iframe class="video-frame" width="560" height="315" src="https://www.youtube-nocookie.com/embed/${videoId}?modestbranding=1&rel=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
       media.appendChild(wrap);
       mediaCount++;
     }
@@ -421,7 +421,7 @@
         if (extraVid) {
           const wrap = document.createElement("div");
           wrap.className = "video-wrap";
-          wrap.innerHTML = `<iframe class="video-frame" width="560" height="315" src="https://www.youtube-nocookie.com/embed/${extraVid}?modestbranding=1&rel=0&wmode=opaque" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
+          wrap.innerHTML = `<iframe class="video-frame" width="560" height="315" src="https://www.youtube-nocookie.com/embed/${extraVid}?modestbranding=1&rel=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
           media.appendChild(wrap);
           mediaCount++;
         } else {

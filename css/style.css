@@ -513,8 +513,6 @@ section {
   width: 100%;
   border-bottom: 1px solid var(--border);
   overflow: hidden;
-  /* Ensure video wrapper doesn't interfere with close button */
-  z-index: 1;
 }
 .video-wrap::before {
   content: "";
@@ -527,15 +525,6 @@ section {
   width: 100%;
   height: 100%;
   border: 0;
-  /* Ensure video stays below close button */
-  z-index: 1;
-}
-
-/* Aggressive iframe stacking control */
-.modal-media iframe,
-.modal-media video {
-  position: relative;
-  z-index: 1 !important;
 }
 .modal-text {
   padding: 1rem;
@@ -707,15 +696,12 @@ body.modal-open {
   background: var(--panel-2);
   color: var(--text);
   cursor: pointer;
-  z-index: 10000;
+  z-index: 1;
   display: none;
   align-items: center;
   justify-content: center;
   font-size: 1.25rem;
   font-weight: bold;
-  /* Cria novo contexto de empilhamento */
-  transform: translateZ(0);
-  will-change: transform;
 }
 @media (max-width: 700px), (pointer: coarse) {
   .img-lightbox-close {
@@ -735,32 +721,12 @@ body.modal-open {
     /* Garante que os eventos de toque funcionem corretamente */
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
-    /* Garante que fique acima de tudo, incluindo vídeos */
-    z-index: 10000;
-    /* Cria novo contexto de empilhamento para forçar acima de iframes */
-    transform: translateZ(0);
-    will-change: transform;
+    /* Garante que fique acima de tudo */
+    z-index: 10;
   }
 }
 .img-lightbox-close:hover {
   background: var(--panel);
-}
-
-/* Proteção adicional para contexto de empilhamento em dispositivos móveis */
-@media (max-width: 700px), (pointer: coarse) {
-  .img-lightbox-dialog {
-    /* Cria contexto de empilhamento isolado para dispositivos móveis */
-    isolation: isolate;
-  }
-
-  /* Força todos os conteúdos de vídeo abaixo do botão de fechar em dispositivos móveis */
-  .video-wrap {
-    z-index: 1 !important;
-  }
-
-  .video-frame {
-    z-index: 1 !important;
-  }
 }
 .img-lightbox-content {
   position: relative;
