@@ -115,6 +115,16 @@ html {
   }
 }
 
+/* Scroll offset for sticky header */
+section {
+  scroll-margin-top: 80px;
+}
+@media (max-width: 900px) {
+  section {
+    scroll-margin-top: 70px;
+  }
+}
+
 .container {
   width: min(1100px, calc(100% - 2rem));
   margin-inline: auto;
@@ -201,8 +211,6 @@ html {
 @media (max-width: 900px) {
   .nav-toggle {
     display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
     padding: 0.4rem 0.6rem;
     background: var(--panel-2);
     border: 1px solid var(--border);
@@ -262,6 +270,23 @@ html {
   );
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
+  overflow: hidden;
+}
+.section.alt::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.section h2 {
+  margin: 0 0 1rem;
+  font-size: 1.5rem;
+  letter-spacing: 0.2px;
+}
+
+/* Grid e Cards */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
 }
 .section h2 {
   margin: 0 0 1rem;
@@ -282,6 +307,13 @@ html {
   .cards > .card {
     grid-column: span 3;
   }
+  /* For "Other Projects" section, use 5 columns per row */
+  .cards[data-section="other"] {
+    grid-template-columns: repeat(5, 1fr);
+  }
+  .cards[data-section="other"] > .card {
+    grid-column: span 1;
+  }
 }
 @media (max-width: 600px) {
   .cards > .card {
@@ -295,23 +327,24 @@ html {
     grid-column: span 4;
   }
 }
-
 .card {
-  background: linear-gradient(180deg, var(--panel), var(--panel-2));
-  border: 1px solid var(--border);
-  border-radius: 0.75rem;
-  overflow: hidden;
-  box-shadow: var(--shadow);
-  cursor: pointer;
-  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  will-change: transform;
 }
-.card:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
+
 .card:hover {
   border-color: color-mix(in srgb, var(--accent) 30%, var(--border));
   box-shadow: 0 14px 32px rgba(0, 0, 0, 0.45);
+  transform: translateY(-4px) scale(1.02);
+}
+
+.card:hover .thumb {
+  transform: scale(1.05);
+}
+
+.card .thumb {
+  transition: transform 0.4s ease;
+  transform-origin: center;
 }
 .thumb {
   aspect-ratio: 16 / 9;
@@ -479,6 +512,7 @@ html {
   position: relative;
   width: 100%;
   border-bottom: 1px solid var(--border);
+  overflow: hidden;
 }
 .video-wrap::before {
   content: "";
@@ -539,11 +573,11 @@ html {
     overflow: auto; /* torna a coluna de mídia scrollável */
     -webkit-overflow-scrolling: touch;
   }
-  /* Fixa o vídeo no topo; imagens rolam por baixo */
+  /* Videos no longer stick to the top; allow normal scroll */
   .modal-media .video-wrap {
-    position: sticky;
-    top: 0;
-    z-index: 1;
+    position: relative;
+    top: auto;
+    z-index: auto;
     background: var(--panel);
   }
   .modal-text {
@@ -627,6 +661,88 @@ html {
 }
 body.modal-open {
   overflow: hidden;
+}
+
+/* ===================== Image Lightbox ===================== */
+.img-lightbox[aria-hidden="true"] {
+  display: none;
+}
+.img-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+}
+.img-lightbox-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+}
+.img-lightbox-dialog {
+  position: relative;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+.img-lightbox-close {
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  height: 2.25rem;
+  width: 2.25rem;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--panel-2);
+  color: var(--text);
+  cursor: pointer;
+  z-index: 1;
+}
+.img-lightbox-close {
+  display: none;
+}
+.img-lightbox-close {
+  display: none;
+}
+@media (max-width: 700px), (pointer: coarse) {
+  .img-lightbox-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+.img-lightbox-close:hover {
+  background: var(--panel);
+}
+.img-lightbox-content {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  border-radius: 0;
+  border: 0;
+  background: #000;
+  box-shadow: none;
+  /* Disable native touch gestures so we can implement custom pinch/zoom/pan */
+  touch-action: none;
+}
+.img-lightbox-content img {
+  display: block;
+  max-width: none; /* we control via transform for zoom */
+  will-change: transform;
+  transform-origin: 0 0;
+  user-select: none;
+}
+
+/* Make images inside modal clickable with pointer cursor */
+.modal-media img {
+  cursor: pointer;
+}
+.img-lightbox.zoomed .img-lightbox-content {
+  cursor: grab;
+}
+.img-lightbox.zoomed .img-lightbox-content:active {
+  cursor: grabbing;
 }
 
 /* Scrollbars (tematizadas) */

@@ -206,13 +206,13 @@
       <section id="other-projects" class="section alt">
         <div class="container">
           <h2>Other Projects</h2>
-          <div class="grid cards" data-section="jams">
+          <div class="grid cards" data-section="other">
             <article
               class="card"
               tabindex="0"
               role="button"
               aria-haspopup="dialog"
-              data-id="jam1"
+              data-id="other1"
             >
               <div class="thumb" aria-hidden="true"></div>
               <div class="card-body">
@@ -227,7 +227,7 @@
               tabindex="0"
               role="button"
               aria-haspopup="dialog"
-              data-id="jam2"
+              data-id="other2"
             >
               <div class="thumb" aria-hidden="true"></div>
               <div class="card-body">
@@ -242,13 +242,13 @@
               tabindex="0"
               role="button"
               aria-haspopup="dialog"
-              data-id="jam3"
+              data-id="other4"
             >
               <div class="thumb" aria-hidden="true"></div>
               <div class="card-body">
-                <h3 class="card-title">Wrong</h3>
-                <p class="card-role">Director/Editor</p>
-                <p class="card-meta">Oct&nbsp;2017 – Dec&nbsp;2017</p>
+                <h3 class="card-title">The Omni Crusher</h3>
+                <p class="card-role">Ergonomics Designer</p>
+                <p class="card-meta">Mar&nbsp;2016 – Dec&nbsp;2016</p>
               </div>
             </article>
 
@@ -257,13 +257,28 @@
               tabindex="0"
               role="button"
               aria-haspopup="dialog"
-              data-id="jam4"
+              data-id="other5"
             >
               <div class="thumb" aria-hidden="true"></div>
               <div class="card-body">
-                <h3 class="card-title">The Omni Crusher</h3>
-                <p class="card-role">Ergonomics Designer</p>
-                <p class="card-meta">Mar&nbsp;2016 – Dec&nbsp;2016</p>
+                <h3 class="card-title">Dark Souls Level</h3>
+                <p class="card-role">Level Designer</p>
+                <p class="card-meta">Nov&nbsp;2017 (2 weeks)</p>
+              </div>
+            </article>
+
+            <article
+              class="card"
+              tabindex="0"
+              role="button"
+              aria-haspopup="dialog"
+              data-id="other3"
+            >
+              <div class="thumb" aria-hidden="true"></div>
+              <div class="card-body">
+                <h3 class="card-title">Wrong</h3>
+                <p class="card-role">Director/Editor</p>
+                <p class="card-meta">Oct&nbsp;2017 – Dec&nbsp;2017</p>
               </div>
             </article>
           </div>
@@ -390,5 +405,23 @@
     </div>
 
     <script src="./js/script.js" defer></script>
+
+    <!-- Image Lightbox (for images inside opened cards) -->
+    <div id="img-lightbox" class="img-lightbox" aria-hidden="true">
+      <div class="img-lightbox-backdrop" data-close></div>
+      <div
+        class="img-lightbox-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Image preview"
+      >
+        <button class="img-lightbox-close" aria-label="Close" data-close>
+          &times;
+        </button>
+        <div class="img-lightbox-content">
+          <img id="img-lightbox-img" alt="" decoding="async" />
+        </div>
+      </div>
+    </div>
   </body>
 </html>

@@ -96,7 +96,7 @@
       video: "",
       links: [],
     },
-    jam1: {
+    other1: {
       title: "GHOULF",
       meta: "Level Designer • GMTK 2021",
       summary:
@@ -125,7 +125,7 @@
         { label: "Play on itch.io", href: "https://daellot.itch.io/ghoulf" },
       ],
     },
-    jam2: {
+    other2: {
       title: "BORKSPEL",
       meta: "Gameplay Designer/Programmer • Jul 2018 – Oct 2018",
       summary:
@@ -152,7 +152,7 @@
       video: "https://youtu.be/MXYDWOqcYrI",
       links: [],
     },
-    jam3: {
+    other3: {
       title: "Wrong",
       meta: "Director/Editor • Oct 2017 – Dec 2017",
       summary:
@@ -172,7 +172,7 @@
       video: "https://youtu.be/IMB0JMg00hQ",
       links: [],
     },
-    jam4: {
+    other4: {
       title: "The Omni Crusher",
       meta: "Physical Interface • Mar 2016 – Dec 2016",
       summary:
@@ -186,9 +186,7 @@
         "Achieved a final grade of 9.9, highlighting excellence in design execution, ergonomics, and presentation.",
       ],
       images: [
-        // A primeira imagem vira a thumbnail do card e a primeira no modal
         "img/side-projects/omnic/omnic-1.jpg",
-        // Fotos adicionais
         "img/side-projects/omnic/omnic-3.jpg",
         "img/side-projects/omnic/omnic-4.jpg",
         "img/side-projects/omnic/omnic-5.jpg",
@@ -196,6 +194,33 @@
         "img/side-projects/omnic/omnic-7.jpg",
       ],
       video: "https://youtu.be/yckgytl1HLg",
+      links: [],
+    },
+    other5: {
+      title: "Dark Souls Level",
+      meta: "Level Designer • Nov 2017 (2 weeks)",
+      summary:
+        "A two-week study recreating a Dark Souls-inspired level to explore layout, pacing, and enemy placement.",
+      experience: [
+        "Conceptual level design expanding Anor Londo with a third bell to ring.",
+        "Developed in two weeks using Google SketchUp.",
+        "Includes a legend and character scale for spatial readability.",
+        "Features bird's-eye and top-down views for macro and gameplay layout clarity.",
+        "Divided into five distinct sections, each explained in detail.",
+        "Showcases progression mapping with both critical and optional paths.",
+        "Designed a beat flowchart illustrating time per beat, beat type, difficulty per beat, and path variations (critical, optional, and shortcut).",
+        "Emphasizes environmental storytelling and souls-like progression design.",
+      ],
+      images: [
+        "img/side-projects/ds-level/ds-1.webp",
+        "img/side-projects/ds-level/ds-2.webp",
+        "img/side-projects/ds-level/ds-3.webp",
+        "img/side-projects/ds-level/ds-4.webp",
+        "img/side-projects/ds-level/ds-5.webp",
+        "img/side-projects/ds-level/ds-6.webp",
+        "img/side-projects/ds-level/ds-7.webp",
+      ],
+      video: "https://www.youtube.com/watch?v=5JVl65TaZeY",
       links: [],
     },
   };
@@ -213,6 +238,13 @@
   const closeButtons = qsa("[data-close]", modal);
   const prevBtn = qs("[data-prev]");
   const nextBtn = qs("[data-next]");
+  // Elementos do lightbox
+  const lb = document.getElementById("img-lightbox");
+  const lbImg = document.getElementById("img-lightbox-img");
+  const lbBackdrop = lb ? lb.querySelector(".img-lightbox-backdrop") : null;
+  const lbClose = lb ? lb.querySelector(".img-lightbox-close") : null;
+  const lbContent = lb ? lb.querySelector(".img-lightbox-content") : null;
+  const lbDialog = lb ? lb.querySelector(".img-lightbox-dialog") : null;
 
   // Mantém a ordem de navegação conforme os cards no DOM
   const cardEls = qsa(".card[data-id]");
@@ -494,7 +526,8 @@
   });
   window.addEventListener("keydown", (e) => {
     if (modal.getAttribute("aria-hidden") === "false" && e.key === "Escape") {
-      closeModal();
+      // Se o lightbox estiver aberto, ele gerencia o ESC; senão, fecha o modal
+      if (!lb || lb.getAttribute("aria-hidden") !== "false") closeModal();
     }
   });
 
@@ -511,6 +544,536 @@
     if (modal.getAttribute("aria-hidden") === "false") {
       if (e.key === "ArrowLeft") openRelative(-1);
       if (e.key === "ArrowRight") openRelative(1);
+    }
+  });
+
+  // ----------------------------------------
+  // Lightbox para imagens dentro do modal
+  // ----------------------------------------
+  let lbState = {
+    open: false,
+    scale: 1,
+    baseScale: 1,
+    tx: 0,
+    ty: 0,
+    natW: 0,
+    natH: 0,
+    lastFocus: null,
+  };
+  function clamp(v, a, b) {
+    return Math.max(a, Math.min(b, v));
+  }
+  function applyLBTransform() {
+    if (!lbImg) return;
+    lbImg.style.transform = `translate(${lbState.tx}px, ${lbState.ty}px) scale(${lbState.scale})`;
+  }
+  function centerLB() {
+    if (!lbContent) return;
+    const rect = lbContent.getBoundingClientRect();
+    const cw = rect.width;
+    const ch = rect.height;
+    const vw = lbState.natW * lbState.scale;
+    const vh = lbState.natH * lbState.scale;
+    // Center even when image is larger than the container (allow negative offset)
+    lbState.tx = (cw - vw) / 2;
+    lbState.ty = (ch - vh) / 2;
+    applyLBTransform();
+  }
+  function getFitScales() {
+    const rect = lbContent.getBoundingClientRect();
+    const scaleW = rect.width / (lbState.natW || rect.width);
+    const scaleH = rect.height / (lbState.natH || rect.height);
+    return {
+      contain: Math.min(scaleW, scaleH),
+      cover: Math.max(scaleW, scaleH),
+    };
+  }
+  function clampTranslate() {
+    const rect = lbContent.getBoundingClientRect();
+    const cw = rect.width;
+    const ch = rect.height;
+    const vw = lbState.natW * lbState.scale;
+    const vh = lbState.natH * lbState.scale;
+
+    // If the image is smaller than the container on an axis, keep it centered
+    if (vw <= cw) {
+      lbState.tx = (cw - vw) / 2;
+    } else {
+      const minX = cw - vw; // negativo
+      lbState.tx = clamp(lbState.tx, minX, 0);
+    }
+
+    if (vh <= ch) {
+      lbState.ty = (ch - vh) / 2;
+    } else {
+      const minY = ch - vh; // negativo
+      lbState.ty = clamp(lbState.ty, minY, 0);
+    }
+  }
+
+  function openLightbox(src, focusEl) {
+    if (!lb || !lbImg || !lbContent) return;
+    lbState.lastFocus = focusEl || document.activeElement;
+    lb.setAttribute("aria-hidden", "false");
+    // Não modificamos body scroll aqui: o modal já bloqueia quando aberto
+    lbImg.style.transform = "none";
+    lbImg.style.cursor = "zoom-in";
+    lb.classList.remove("zoomed");
+    lbImg.src = src;
+    const onLoad = () => {
+      lbState.natW = lbImg.naturalWidth || 0;
+      lbState.natH = lbImg.naturalHeight || 0;
+      // Base scale fits entire image within viewport (contain)
+      const { contain } = getFitScales();
+      lbState.baseScale = contain;
+      lbState.scale = lbState.baseScale;
+      centerLB();
+    };
+    if (lbImg.complete) onLoad();
+    else lbImg.addEventListener("load", onLoad, { once: true });
+    lbState.open = true;
+    lbClose?.focus?.();
+  }
+  function closeLightbox() {
+    if (!lb) return;
+    lb.setAttribute("aria-hidden", "true");
+    try {
+      lbImg.src = "";
+    } catch {}
+    lbState.open = false;
+    lbState.scale = lbState.baseScale = 1;
+    lbState.tx = lbState.ty = 0;
+    if (lbState.lastFocus && lbState.lastFocus.focus) lbState.lastFocus.focus();
+  }
+
+  // Eventos do lightbox
+  lbBackdrop?.addEventListener("click", closeLightbox);
+  lbClose?.addEventListener("click", closeLightbox);
+  window.addEventListener("keydown", (e) => {
+    if (lb && lb.getAttribute("aria-hidden") === "false" && e.key === "Escape")
+      closeLightbox();
+  });
+
+  // Bind nas imagens que entram no modal
+  const bindModalImages = () => {
+    if (!media) return;
+    // Delegação: escuta cliques em imagens diretas dentro de #modal-media
+    media.addEventListener("click", (e) => {
+      const target = e.target;
+      if (!(target instanceof HTMLElement)) return;
+      // Apenas <img> que não são ícones/botões
+      if (target.tagName.toLowerCase() === "img") {
+        const src = target.getAttribute("src") || "";
+        if (!src) return;
+        e.preventDefault();
+        e.stopPropagation();
+        openLightbox(src, target);
+      }
+    });
+  };
+  bindModalImages();
+
+  // Bind lightbox interactions once (zoom/pan + close on outside click when zoomed)
+  (function bindLightboxOnce() {
+    if (!lb || !lbImg || !lbContent) return;
+    if (lb._bound) return;
+    lb._bound = true;
+
+    // Toggle zoom with click on the image
+    lbImg.addEventListener("click", (e) => {
+      if (lbState.natW <= 0 || lbState.natH <= 0) return;
+      const rect = lbContent.getBoundingClientRect();
+      const { contain, cover } = getFitScales();
+      // If zoomed, reset to contain (fit within)
+      if (lbState.scale > contain + 0.001) {
+        lbState.scale = lbState.baseScale;
+        lb.classList.remove("zoomed");
+        lbImg.style.cursor = "zoom-in";
+        centerLB();
+        return;
+      }
+      // Zoom to cover (fit width or height), centered on click point
+      const mx = e.clientX - rect.left;
+      const my = e.clientY - rect.top;
+      const newScale = Math.max(cover, lbState.baseScale);
+      const px = (mx - lbState.tx) / lbState.scale;
+      const py = (my - lbState.ty) / lbState.scale;
+      lbState.scale = newScale;
+      lbState.tx = mx - px * lbState.scale;
+      lbState.ty = my - py * lbState.scale;
+      clampTranslate();
+      applyLBTransform();
+      lb.classList.add("zoomed");
+      lbImg.style.cursor = "grab";
+    });
+
+    // Zoom suave com roda do mouse (em torno do cursor)
+    lbContent.addEventListener(
+      "wheel",
+      (e) => {
+        if (!lbState.open) return;
+        e.preventDefault();
+        const rect = lbContent.getBoundingClientRect();
+        const mx = e.clientX - rect.left;
+        const my = e.clientY - rect.top;
+        const delta = -e.deltaY; // up = zoom in
+        const factor = Math.exp(delta * 0.0015);
+        const { contain, cover } = getFitScales();
+        const minS = contain;
+        const maxS = Math.max(3 * contain, cover);
+        const newScale = clamp(lbState.scale * factor, minS, maxS);
+        const px = (mx - lbState.tx) / lbState.scale;
+        const py = (my - lbState.ty) / lbState.scale;
+        lbState.scale = newScale;
+        lbState.tx = mx - px * lbState.scale;
+        lbState.ty = my - py * lbState.scale;
+        clampTranslate();
+        applyLBTransform();
+        if (lbState.scale > minS + 0.001) {
+          lb.classList.add("zoomed");
+          lbImg.style.cursor = "grab";
+        } else {
+          lb.classList.remove("zoomed");
+          lbImg.style.cursor = "zoom-in";
+          centerLB();
+        }
+      },
+      { passive: false }
+    );
+
+    // Arrastar/pan enquanto está com zoom
+    let dragging = false;
+    let didDrag = false;
+    let lastX = 0,
+      lastY = 0;
+    lbContent.addEventListener("mousedown", (e) => {
+      if (lbState.scale <= lbState.baseScale + 0.001) return;
+      // Se o usuário clicou na imagem, permite arrastar; se clicou fora, pode fechar (tratado abaixo)
+      dragging = true;
+      didDrag = false;
+      lastX = e.clientX;
+      lastY = e.clientY;
+      lb.classList.add("zoomed");
+      lbImg.style.cursor = "grabbing";
+      e.preventDefault();
+    });
+    window.addEventListener("mousemove", (e) => {
+      if (!dragging) return;
+      const dx = e.clientX - lastX;
+      const dy = e.clientY - lastY;
+      lastX = e.clientX;
+      lastY = e.clientY;
+      if (Math.abs(dx) > 2 || Math.abs(dy) > 2) didDrag = true;
+      lbState.tx += dx;
+      lbState.ty += dy;
+      clampTranslate();
+      applyLBTransform();
+    });
+    window.addEventListener("mouseup", () => {
+      if (!dragging) return;
+      dragging = false;
+      if (lbState.scale > lbState.baseScale + 0.001)
+        lbImg.style.cursor = "grab";
+      else lbImg.style.cursor = "zoom-in";
+    });
+
+    // ================= Gestos de toque: duplo toque, pinça para zoom e pan =================
+    let touchState = {
+      active: false,
+      lastTapTime: 0,
+      startDist: 0,
+      startScale: 1,
+      startMidX: 0,
+      startMidY: 0,
+      lastX: 0,
+      lastY: 0,
+      panning: false,
+    };
+
+    function getTouches(e) {
+      const t = e.touches;
+      const rect = lbContent.getBoundingClientRect();
+      if (t.length === 1) {
+        return [{ x: t[0].clientX - rect.left, y: t[0].clientY - rect.top }];
+      } else if (t.length >= 2) {
+        return [
+          { x: t[0].clientX - rect.left, y: t[0].clientY - rect.top },
+          { x: t[1].clientX - rect.left, y: t[1].clientY - rect.top },
+        ];
+      }
+      return [];
+    }
+    function dist(a, b) {
+      const dx = a.x - b.x;
+      const dy = a.y - b.y;
+      return Math.hypot(dx, dy);
+    }
+    function midpoint(a, b) {
+      return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+    }
+
+    lbContent.addEventListener(
+      "touchstart",
+      (e) => {
+        if (!lbState.open) return;
+        if (!e.touches || e.touches.length === 0) return;
+        // Prevent native zoom/scroll
+        e.preventDefault();
+
+        const now = performance.now();
+        const pts = getTouches(e);
+
+        // Double-tap detection (single finger quick taps)
+        if (e.touches.length === 1) {
+          // store for pan
+          touchState.lastX = pts[0].x + lbContent.getBoundingClientRect().left;
+          touchState.lastY = pts[0].y + lbContent.getBoundingClientRect().top;
+          touchState.panning = lbState.scale > lbState.baseScale + 0.001;
+
+          const dt = now - touchState.lastTapTime;
+          touchState.lastTapTime = now;
+          if (dt > 0 && dt < 300) {
+            // Duplo toque: alterna zoom centralizado no toque
+            const mx = pts[0].x;
+            const my = pts[0].y;
+            const { contain, cover } = getFitScales();
+            const minS = contain;
+            const maxS = Math.max(3 * contain, cover);
+            const targetScale =
+              lbState.scale > contain + 0.001
+                ? contain
+                : clamp(cover, minS, maxS);
+            const px = (mx - lbState.tx) / lbState.scale;
+            const py = (my - lbState.ty) / lbState.scale;
+            lbState.scale = targetScale;
+            lbState.tx = mx - px * lbState.scale;
+            lbState.ty = my - py * lbState.scale;
+            clampTranslate();
+            applyLBTransform();
+            if (lbState.scale > minS + 0.001) {
+              lb.classList.add("zoomed");
+            } else {
+              lb.classList.remove("zoomed");
+              centerLB();
+            }
+            return;
+          }
+        }
+
+        // Pinch start (two fingers)
+        if (e.touches.length >= 2 && pts.length >= 2) {
+          const a = pts[0];
+          const b = pts[1];
+          touchState.startDist = dist(a, b);
+          touchState.startScale = lbState.scale;
+          const mid = midpoint(a, b);
+          touchState.startMidX = mid.x;
+          touchState.startMidY = mid.y;
+          touchState.active = true;
+          touchState.panning = false;
+        }
+      },
+      { passive: false }
+    );
+
+    lbContent.addEventListener(
+      "touchmove",
+      (e) => {
+        if (!lbState.open) return;
+        if (!e.touches || e.touches.length === 0) return;
+        e.preventDefault();
+        const rect = lbContent.getBoundingClientRect();
+        if (e.touches.length >= 2) {
+          // Zoom com gesto de pinça
+          const pts = getTouches(e);
+          if (pts.length < 2 || touchState.startDist <= 0) return;
+          const a = pts[0];
+          const b = pts[1];
+          const mid = midpoint(a, b);
+          const currentDist = dist(a, b);
+          const scaleFactor = currentDist / touchState.startDist;
+          const { contain, cover } = getFitScales();
+          const minS = contain;
+          const maxS = Math.max(3 * contain, cover);
+          const targetScale = clamp(
+            touchState.startScale * scaleFactor,
+            minS,
+            maxS
+          );
+
+          // Zoom em torno do ponto médio
+          const mx = mid.x;
+          const my = mid.y;
+          const px = (mx - lbState.tx) / lbState.scale;
+          const py = (my - lbState.ty) / lbState.scale;
+          lbState.scale = targetScale;
+          lbState.tx = mx - px * lbState.scale;
+          lbState.ty = my - py * lbState.scale;
+          clampTranslate();
+          applyLBTransform();
+          if (lbState.scale > lbState.baseScale + 0.001) {
+            lb.classList.add("zoomed");
+          } else {
+            lb.classList.remove("zoomed");
+            centerLB();
+          }
+        } else if (e.touches.length === 1) {
+          // Pan com um dedo quando está com zoom
+          if (lbState.scale <= lbState.baseScale + 0.001) return;
+          const t = e.touches[0];
+          const cx = t.clientX;
+          const cy = t.clientY;
+          const dx = cx - (touchState.lastX || cx);
+          const dy = cy - (touchState.lastY || cy);
+          touchState.lastX = cx;
+          touchState.lastY = cy;
+          if (Math.abs(dx) > 1 || Math.abs(dy) > 1) didDrag = true;
+          lbState.tx += dx;
+          lbState.ty += dy;
+          clampTranslate();
+          applyLBTransform();
+        }
+      },
+      { passive: false }
+    );
+
+    lbContent.addEventListener(
+      "touchend",
+      (e) => {
+        // limpar flags
+        if (e.touches && e.touches.length === 0) {
+          touchState.active = false;
+          touchState.startDist = 0;
+          touchState.panning = false;
+        }
+      },
+      { passive: false }
+    );
+
+    // Fecha ao clicar em qualquer lugar fora da imagem (independente do zoom)
+    // Proteção: se acabou de fazer pan, ignora o clique para evitar fechar acidentalmente
+    const onDialogClick = (e) => {
+      if (!lb || lb.getAttribute("aria-hidden") === "true") return;
+      if (didDrag) {
+        // Reset and ignore this click
+        didDrag = false;
+        return;
+      }
+      const target = e.target;
+      if (!(target instanceof HTMLElement)) return;
+      // Se o alvo do clique for a própria imagem, não faz nada (clique na imagem alterna zoom)
+      if (target === lbImg) return;
+      // Caso contrário, fecha
+      e.preventDefault();
+      closeLightbox();
+    };
+    lbDialog?.addEventListener("click", onDialogClick);
+  })();
+
+  // ----------------------------------------
+  // Enhanced Smooth Scrolling
+  // ----------------------------------------
+
+  // Handle navigation clicks with enhanced scrolling
+  function enhancedScrollTo(target) {
+    const element = document.querySelector(target);
+    if (!element) return;
+
+    // Get header height for offset calculation
+    const header = document.querySelector(".site-header");
+    const headerHeight = header ? header.offsetHeight : 0;
+    const extraOffset = 20; // Additional breathing room
+
+    const targetPosition = element.offsetTop - headerHeight - extraOffset;
+    const startPosition = window.pageYOffset;
+    const distance = Math.max(0, targetPosition) - startPosition;
+    const duration = Math.min(1200, Math.max(600, Math.abs(distance) * 0.8)); // Adaptive duration
+
+    let start = null;
+
+    // Custom easing function (ease-out-cubic)
+    function easeOutCubic(t) {
+      return 1 - Math.pow(1 - t, 3);
+    }
+
+    function animation(currentTime) {
+      if (start === null) start = currentTime;
+      const timeElapsed = currentTime - start;
+      const progress = Math.min(timeElapsed / duration, 1);
+
+      const ease = easeOutCubic(progress);
+      const currentPosition = startPosition + distance * ease;
+
+      window.scrollTo(0, currentPosition);
+
+      if (progress < 1) {
+        requestAnimationFrame(animation);
+      }
+    }
+
+    requestAnimationFrame(animation);
+  }
+
+  // Enhanced navigation link handling
+  document.addEventListener("click", (e) => {
+    const link = e.target.closest('a[href^="#"]');
+    if (!link) return;
+
+    const href = link.getAttribute("href");
+    if (!href || href === "#") return;
+
+    // Handle special cases
+    if (href === "#top") {
+      e.preventDefault();
+      // Use custom smooth scroll for top as well
+      const startPosition = window.pageYOffset;
+      const distance = -startPosition;
+      const duration = Math.min(1000, Math.max(500, Math.abs(distance) * 0.6));
+
+      let start = null;
+
+      function easeOutCubic(t) {
+        return 1 - Math.pow(1 - t, 3);
+      }
+
+      function animation(currentTime) {
+        if (start === null) start = currentTime;
+        const timeElapsed = currentTime - start;
+        const progress = Math.min(timeElapsed / duration, 1);
+
+        const ease = easeOutCubic(progress);
+        const currentPosition = startPosition + distance * ease;
+
+        window.scrollTo(0, currentPosition);
+
+        if (progress < 1) {
+          requestAnimationFrame(animation);
+        }
+      }
+
+      requestAnimationFrame(animation);
+      return;
+    }
+
+    // Handle section navigation
+    if (href.startsWith("#") && href.length > 1) {
+      e.preventDefault();
+      enhancedScrollTo(href);
+
+      // Update URL without triggering scroll
+      if (history.pushState) {
+        history.pushState(null, null, href);
+      }
+    }
+  });
+
+  // Handle page load with hash
+  window.addEventListener("load", () => {
+    if (window.location.hash) {
+      // Delay to ensure page is fully rendered
+      setTimeout(() => {
+        enhancedScrollTo(window.location.hash);
+      }, 100);
     }
   });
 
@@ -637,7 +1200,7 @@
     setPrettySmileMode(!document.body.classList.contains("pretty-smile-mode"));
   }
 
-  // Pretty Smile follower (part of Konami Code/Pretty Smile Mode)
+  // Follower do Pretty Smile (parte do Konami Code/Modo Pretty Smile)
   let prettysmileEnabled = false;
   let prettysmileEl = null;
   let prettysmileRAF = 0;
@@ -653,7 +1216,7 @@
     const lerp = prefersReduced ? 1 : 0.15;
     prettysmileX = prettysmileX + (targetX - prettysmileX) * lerp;
     prettysmileY = prettysmileY + (targetY - prettysmileY) * lerp;
-    // Usar left/top para evitar problemas com scroll e conflitos com transform do CSS
+    // Usa left/top para evitar problemas com scroll e conflitos com transform do CSS
     prettysmileEl.style.left = `${Math.round(prettysmileX)}px`;
     prettysmileEl.style.top = `${Math.round(prettysmileY)}px`;
     prettysmileRAF = requestAnimationFrame(prettysmileLoop);
@@ -720,16 +1283,15 @@
     }
   }
 
-  // Retro Mode custom cursor (CRT crosshair + extras)
   let cursorEnabled = false;
   let cursorEl = null;
   let ghostEls = [];
   let cursorRAF = 0;
   let cx = -100,
-    cy = -100; // pointer pos atual
+    cy = -100; // pos atual do ponteiro
   let lastX = 0,
     lastY = 0,
-    lastT = 0; // para scaling baseado em velocidade
+    lastT = 0; // para scaling baseado na velocidade
   function updateCursorHover() {
     if (!cursorEl) return;
     const el = document.elementFromPoint?.(cx, cy) || null;
@@ -770,7 +1332,7 @@
       lastX = cx;
       lastY = cy;
       lastT = now;
-      // Link-aware hover: recomputa baseado na posição atual
+      // Hover sensível a links: recomputa baseado na posição atual
       updateCursorHover();
     }
     if (!prefersReduced && !cursorRAF)
