@@ -646,16 +646,16 @@
   // Eventos do lightbox
   lbBackdrop?.addEventListener("click", closeLightbox);
 
-  // Enhanced close button event handling for mobile
+  // Manipulação aprimorada do botão de fechar para mobile
   if (lbClose) {
     lbClose.addEventListener("click", closeLightbox);
-    // Add touch events for better mobile support
+    // Adiciona eventos de toque para melhor suporte mobile
     lbClose.addEventListener("touchend", (e) => {
       e.preventDefault();
       e.stopPropagation();
       closeLightbox();
     });
-    // Add pointer events as fallback
+    // Adiciona eventos de ponteiro como fallback
     lbClose.addEventListener("pointerup", (e) => {
       if (e.pointerType === "touch") {
         e.preventDefault();
@@ -689,13 +689,13 @@
   };
   bindModalImages();
 
-  // Bind lightbox interactions once (zoom/pan + close on outside click when zoomed)
+  // Bind das interações do lightbox uma vez (zoom/pan + fechar ao clicar fora quando com zoom)
   (function bindLightboxOnce() {
     if (!lb || !lbImg || !lbContent) return;
     if (lb._bound) return;
     lb._bound = true;
 
-    // Toggle zoom with click on the image
+    // Alterna zoom ao clicar na imagem
     lbImg.addEventListener("click", (e) => {
       if (lbState.natW <= 0 || lbState.natH <= 0) return;
       const rect = lbContent.getBoundingClientRect();
@@ -987,15 +987,15 @@
   })();
 
   // ----------------------------------------
-  // Enhanced Smooth Scrolling
+  // Rolagem suave aprimorada
   // ----------------------------------------
 
-  // Handle navigation clicks with enhanced scrolling
+  // Lida com cliques de navegação com rolagem suave
   function enhancedScrollTo(target) {
     const element = document.querySelector(target);
     if (!element) return;
 
-    // Get header height for offset calculation
+    // Pega altura do header para calcular o deslocamento
     const header = document.querySelector(".site-header");
     const headerHeight = header ? header.offsetHeight : 0;
     const extraOffset = 20; // Additional breathing room
@@ -1007,7 +1007,7 @@
 
     let start = null;
 
-    // Custom easing function (ease-out-cubic)
+    // Função de easing personalizada (ease-out-cubic)
     function easeOutCubic(t) {
       return 1 - Math.pow(1 - t, 3);
     }
@@ -1030,7 +1030,7 @@
     requestAnimationFrame(animation);
   }
 
-  // Enhanced navigation link handling
+  // Manipulação aprimorada de links de navegação
   document.addEventListener("click", (e) => {
     const link = e.target.closest('a[href^="#"]');
     if (!link) return;
@@ -1038,10 +1038,10 @@
     const href = link.getAttribute("href");
     if (!href || href === "#") return;
 
-    // Handle special cases
+    // Lida com casos especiais
     if (href === "#top") {
       e.preventDefault();
-      // Use custom smooth scroll for top as well
+      // Usa scroll suave personalizada para o topo também
       const startPosition = window.pageYOffset;
       const distance = -startPosition;
       const duration = Math.min(1000, Math.max(500, Math.abs(distance) * 0.6));
@@ -1083,10 +1083,10 @@
     }
   });
 
-  // Handle page load with hash
+  // Lida com carregamento da página com hash
   window.addEventListener("load", () => {
     if (window.location.hash) {
-      // Delay to ensure page is fully rendered
+      // Delay para garantir que a página está totalmente renderizada
       setTimeout(() => {
         enhancedScrollTo(window.location.hash);
       }, 100);
