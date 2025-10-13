@@ -200,16 +200,13 @@
       title: "Dark Souls Level",
       meta: "Level Designer • Nov 2017 (2 weeks)",
       summary:
-        "A two-week study recreating a Dark Souls-inspired level to explore layout, pacing, and enemy placement.",
+        "Level design study inspired by Dark Souls' Anor Londo — a reimagined “third bell” built in two weeks using Google SketchUp.",
       experience: [
-        "Conceptual level design expanding Anor Londo with a third bell to ring.",
-        "Developed in two weeks using Google SketchUp.",
-        "Includes a legend and character scale for spatial readability.",
-        "Features bird's-eye and top-down views for macro and gameplay layout clarity.",
-        "Divided into five distinct sections, each explained in detail.",
-        "Showcases progression mapping with both critical and optional paths.",
-        "Designed a beat flowchart illustrating time per beat, beat type, difficulty per beat, and path variations (critical, optional, and shortcut).",
-        "Emphasizes environmental storytelling and souls-like progression design.",
+        "Features five interconnected sections, each with its own spatial identity and progression theme",
+        "Includes bird's-eye and top-down maps, full legend, and character scale reference for spatial readability",
+        "Documents critical, optional, and shortcut paths, with notes on pacing and exploration flow",
+        "Accompanied by a beat flowchart detailing time per beat, beat type, path type, and difficulty curve per beat",
+        "Supported by a difficulty-over-time graph, visualizing challenge rhythm and player intensity throughout the level",
       ],
       images: [
         "img/side-projects/ds-level/ds-1.webp",
@@ -648,7 +645,26 @@
 
   // Eventos do lightbox
   lbBackdrop?.addEventListener("click", closeLightbox);
-  lbClose?.addEventListener("click", closeLightbox);
+
+  // Enhanced close button event handling for mobile
+  if (lbClose) {
+    lbClose.addEventListener("click", closeLightbox);
+    // Add touch events for better mobile support
+    lbClose.addEventListener("touchend", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      closeLightbox();
+    });
+    // Add pointer events as fallback
+    lbClose.addEventListener("pointerup", (e) => {
+      if (e.pointerType === "touch") {
+        e.preventDefault();
+        e.stopPropagation();
+        closeLightbox();
+      }
+    });
+  }
+
   window.addEventListener("keydown", (e) => {
     if (lb && lb.getAttribute("aria-hidden") === "false" && e.key === "Escape")
       closeLightbox();
