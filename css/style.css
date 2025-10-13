@@ -530,6 +530,13 @@ section {
   /* Ensure video stays below close button */
   z-index: 1;
 }
+
+/* Aggressive iframe stacking control */
+.modal-media iframe,
+.modal-media video {
+  position: relative;
+  z-index: 1 !important;
+}
 .modal-text {
   padding: 1rem;
 }
@@ -706,6 +713,9 @@ body.modal-open {
   justify-content: center;
   font-size: 1.25rem;
   font-weight: bold;
+  /* Create new stacking context to force above iframes */
+  transform: translateZ(0);
+  will-change: transform;
 }
 @media (max-width: 700px), (pointer: coarse) {
   .img-lightbox-close {
@@ -727,10 +737,29 @@ body.modal-open {
     -webkit-tap-highlight-color: transparent;
     /* Ensure it's above everything including videos */
     z-index: 10000;
+    /* Create new stacking context to force above iframes */
+    transform: translateZ(0);
+    will-change: transform;
   }
 }
 .img-lightbox-close:hover {
   background: var(--panel);
+}
+
+/* Additional mobile stacking context protection */
+@media (max-width: 700px), (pointer: coarse) {
+  .img-lightbox-dialog {
+    /* Create isolated stacking context for mobile */
+    isolation: isolate;
+  }
+  
+  /* Force all video content below close button on mobile */
+  .modal-media,
+  .video-wrap,
+  .video-frame {
+    position: relative;
+    z-index: 1 !important;
+  }
 }
 .img-lightbox-content {
   position: relative;
