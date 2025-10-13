@@ -752,7 +752,7 @@ body.modal-open {
     /* Create isolated stacking context for mobile */
     isolation: isolate;
   }
-  
+
   /* Force all video content below close button on mobile */
   .modal-media,
   .video-wrap,
