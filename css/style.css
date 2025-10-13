@@ -713,7 +713,7 @@ body.modal-open {
   justify-content: center;
   font-size: 1.25rem;
   font-weight: bold;
-  /* Create new stacking context to force above iframes */
+  /* Cria novo contexto de empilhamento */
   transform: translateZ(0);
   will-change: transform;
 }
@@ -725,19 +725,19 @@ body.modal-open {
     right: 0.75rem;
     top: 0.75rem;
     font-size: 1.5rem;
-    /* Ensure better touch target */
+    /* Garante melhor alvo de toque */
     min-height: 44px;
     min-width: 44px;
-    /* Better visibility on mobile */
+    /* Melhor visibilidade em dispositivos móveis */
     background: rgba(0, 0, 0, 0.8);
     border: 2px solid rgba(255, 255, 255, 0.3);
     color: #fff;
-    /* Ensure touch events work properly */
+    /* Garante que os eventos de toque funcionem corretamente */
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
-    /* Ensure it's above everything including videos */
+    /* Garante que fique acima de tudo, incluindo vídeos */
     z-index: 10000;
-    /* Create new stacking context to force above iframes */
+    /* Cria novo contexto de empilhamento para forçar acima de iframes */
     transform: translateZ(0);
     will-change: transform;
   }
@@ -746,18 +746,19 @@ body.modal-open {
   background: var(--panel);
 }
 
-/* Additional mobile stacking context protection */
+/* Proteção adicional para contexto de empilhamento em dispositivos móveis */
 @media (max-width: 700px), (pointer: coarse) {
   .img-lightbox-dialog {
-    /* Create isolated stacking context for mobile */
+    /* Cria contexto de empilhamento isolado para dispositivos móveis */
     isolation: isolate;
   }
 
-  /* Force all video content below close button on mobile */
-  .modal-media,
-  .video-wrap,
+  /* Força todos os conteúdos de vídeo abaixo do botão de fechar em dispositivos móveis */
+  .video-wrap {
+    z-index: 1 !important;
+  }
+
   .video-frame {
-    position: relative;
     z-index: 1 !important;
   }
 }
