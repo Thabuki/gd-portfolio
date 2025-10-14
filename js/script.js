@@ -707,12 +707,17 @@
     if (lb._bound) return;
     lb._bound = true;
 
-    // Alterna zoom ao clicar na imagem
+    // Alterna zoom ao clicar na imagem (ignora clique imediatamente após arraste)
     lbImg.addEventListener("click", (e) => {
+      // Se houve arraste (pan) antes de soltar, não interpreta como clique de toggle
+      if (typeof didDrag !== "undefined" && didDrag) {
+        didDrag = false; // reseta para próximos cliques
+        return; // não alterna zoom
+      }
       if (lbState.natW <= 0 || lbState.natH <= 0) return;
       const rect = lbContent.getBoundingClientRect();
       const { contain, cover } = getFitScales();
-      // If zoomed, reset to contain (fit within)
+      // Se já está com zoom além do contain, volta
       if (lbState.scale > contain + 0.001) {
         lbState.scale = lbState.baseScale;
         lb.classList.remove("zoomed");
@@ -720,7 +725,7 @@
         centerLB();
         return;
       }
-      // Zoom to cover (fit width or height), centered on click point
+      // Aplica zoom (cover) centralizando no ponto clicado
       const mx = e.clientX - rect.left;
       const my = e.clientY - rect.top;
       const newScale = Math.max(cover, lbState.baseScale);
