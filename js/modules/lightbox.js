@@ -214,6 +214,8 @@
       if (!lbState.open) return;
       if (didDrag) {
         didDrag = false;
+        e.preventDefault();
+        e.stopPropagation();
         return;
       }
       // Close lightbox on any click (image or outside)
@@ -268,6 +270,7 @@
         momentumRAF = 0;
         velocityX = velocityY = 0;
       }
+      e.preventDefault();
       dragging = true;
       didDrag = false;
       lastX = e.clientX;
