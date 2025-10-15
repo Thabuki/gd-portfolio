@@ -1,4 +1,3 @@
-// Project data extracted from script.js
 // Exported as an ES module for modular architecture
 
 export const projects = {
@@ -37,7 +36,7 @@ export const projects = {
       "img/main-games/changer/changer-20.jpg",
       "img/main-games/changer/changer-21.jpg",
     ],
-    // O vídeo pode ser uma URL do YouTube ou um arquivo local
+    // The video can be a YouTube URL or a local file
     video: "https://youtu.be/hpGGYigkXLk",
     links: [
       {
