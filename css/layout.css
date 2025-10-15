@@ -1,0 +1,103 @@
+/* Layout styles: containers, header, footer, navigation, grid */
+.container {
+  width: min(1100px, calc(100% - 2rem));
+  margin-inline: auto;
+}
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(11, 13, 16, 0.7);
+  backdrop-filter: saturate(140%) blur(8px);
+  -webkit-backdrop-filter: saturate(140%) blur(8px);
+  border-bottom: 1px solid var(--border);
+}
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+}
+.brand {
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+.brand img {
+  display: block;
+  height: 36px;
+  width: auto;
+}
+.site-nav {
+  position: relative;
+}
+.site-nav .menu {
+  display: flex;
+  gap: 1rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.site-nav .menu[hidden] {
+  display: none;
+}
+.site-nav a {
+  color: var(--muted);
+  text-decoration: none;
+  padding: 0.4rem 0.6rem;
+  border-radius: 0.35rem;
+}
+.site-nav a:hover,
+.site-nav a:focus {
+  color: var(--text);
+  background: var(--panel-2);
+}
+.nav-toggle {
+  display: none;
+}
+@media (max-width: 900px) {
+  .nav-toggle {
+    display: inline-flex;
+    padding: 0.4rem 0.6rem;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 0.35rem;
+    color: var(--text);
+    cursor: pointer;
+  }
+  .site-nav .menu {
+    position: absolute;
+    right: 0;
+    top: 2.6rem;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    flex-direction: column;
+    width: max-content;
+    min-width: 180px;
+  }
+  .site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+  }
+  .site-main {
+    padding-top: 64px;
+  }
+}
+.site-footer {
+  padding: 2rem 0;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+}
+.site-footer a {
+  color: inherit;
+}

@@ -66,8 +66,16 @@
       rel="stylesheet"
     />
     <!-- Preload main stylesheet for faster first paint -->
-    <link rel="preload" as="style" href="./css/style.css" />
-    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="preload" as="style" href="./css/base.css" />
+    <link rel="stylesheet" href="./css/base.css" />
+    <link rel="stylesheet" href="./css/sections.css" />
+    <link rel="stylesheet" href="./css/layout.css" />
+    <link rel="stylesheet" href="./css/cards.css" />
+    <link rel="stylesheet" href="./css/modal.css" />
+    <link rel="stylesheet" href="./css/secrets.css" />
+    <link rel="stylesheet" href="./css/responsive.css" />
+    <link rel="stylesheet" href="./css/about.css" />
+    <link rel="stylesheet" href="./css/skip-link.css" />
 
     <!-- Structured data -->
     <script type="application/ld+json">
@@ -148,7 +156,7 @@
         <div class="container">
           <h2>Professional Projects</h2>
           <div class="grid cards" data-section="main">
-            <!-- Substituir os valores de data-id pelas suas chaves em script.js -->
+            <!-- Cards populated via js/data/projects.js and modules/modal.js -->
             <article
               class="card"
               tabindex="0"
@@ -329,10 +337,7 @@
         <p>
           © <span id="year"></span> Thales Rebelo •
           <a href="https://www.linkedin.com/in/thalesrebelo/">LinkedIn</a> •
-          <a
-            href="media/Thales-Rebelo-Resume.pdf"
-            target="_blank"
-            rel="noopener"
+          <a href="docs/Thales-Rebelo-Resume.pdf" target="_blank" rel="noopener"
             >Resume</a
           >
         </p>
@@ -404,7 +409,7 @@
       </div>
     </div>
 
-    <script src="./js/script.js" defer></script>
+    <script type="module" src="./js/main.js"></script>
 
     <!-- Image Lightbox -->
     <div id="img-lightbox" class="img-lightbox" aria-hidden="true">

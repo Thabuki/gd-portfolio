@@ -1,0 +1,56 @@
+/* Base styles: variables, resets, typography */
+:root {
+  --bg: #0b0d10;
+  --panel: #12151a;
+  --panel-2: #161a21;
+  --text: #e6e9ef;
+  --muted: #a9b0bb;
+  --accent: #6ee7f7;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu,
+    Cantarell, "Helvetica Neue", Arial, Noto Sans, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol";
+  background: linear-gradient(180deg, var(--bg), #0e1116);
+  color: var(--text);
+  line-height: 1.6;
+}
+html {
+  scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.focus-visible-ring:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.nowrap {
+  white-space: nowrap;
+}

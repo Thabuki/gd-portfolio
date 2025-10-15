@@ -1,0 +1,26 @@
+/* About section grid layout for desktop */
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr minmax(140px, 320px);
+  grid-template-areas: "text photo";
+  gap: 2rem;
+  align-items: center;
+}
+.about-photo {
+  grid-area: photo;
+  justify-self: end;
+}
+.about-text {
+  grid-area: text;
+}
+@media (max-width: 900px) {
+  .about-grid {
+    grid-template-columns: 1fr;
+    grid-template-areas: "photo" "text";
+    text-align: center;
+  }
+  .about-photo {
+    justify-self: center;
+    margin-bottom: 1.5rem;
+  }
+}

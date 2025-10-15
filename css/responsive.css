@@ -1,0 +1,103 @@
+/* Responsive styles and media queries */
+@media (max-width: 900px) {
+  section {
+    scroll-margin-top: 70px;
+  }
+  .about-grid {
+    grid-template-columns: 1fr;
+    grid-template-areas: "photo" "text";
+    text-align: center;
+  }
+  .about-photo {
+    justify-self: center;
+  }
+  .nav-toggle {
+    display: inline-flex;
+    padding: 0.4rem 0.6rem;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 0.35rem;
+    color: var(--text);
+    cursor: pointer;
+  }
+  .site-nav .menu {
+    position: absolute;
+    right: 0;
+    top: 2.6rem;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    flex-direction: column;
+    width: max-content;
+    min-width: 180px;
+  }
+  .site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+  }
+  .site-main {
+    padding-top: 64px;
+  }
+}
+@media (min-width: 901px) {
+  .about-grid {
+    grid-template-columns: 1fr minmax(140px, 320px);
+    grid-template-areas: "text photo";
+  }
+}
+@media (min-width: 900px) {
+  .cards > .card {
+    grid-column: span 3;
+  }
+  .cards[data-section="other"] {
+    grid-template-columns: repeat(5, 1fr);
+  }
+  .cards[data-section="other"] > .card {
+    grid-column: span 1;
+  }
+  .cards[data-section="main"] > .card {
+    grid-column: span 4;
+  }
+  .modal-content {
+    grid-template-columns: 1.2fr 1fr;
+    overflow: hidden;
+    height: calc(100vh - 12vh);
+    max-height: calc(100vh - 12vh);
+  }
+  .modal-media {
+    border-right: 1px solid var(--border);
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .modal-media .video-wrap {
+    position: relative;
+    top: auto;
+    z-index: auto;
+    background: var(--panel);
+  }
+  .modal-text {
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+@media (max-width: 600px) {
+  .cards > .card {
+    grid-column: 1 / -1;
+  }
+  .modal-prev,
+  .modal-next {
+    top: auto;
+    bottom: 0.5rem;
+    transform: none;
+  }
+  .modal-prev {
+    left: 0.5rem;
+  }
+  .modal-next {
+    right: 0.5rem;
+  }
+}
