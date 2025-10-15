@@ -173,6 +173,9 @@
         if (!src) return;
         e.preventDefault();
         e.stopPropagation();
+        // Copy alt text for accessibility in the lightbox image
+        const altText = target.getAttribute("alt") || "";
+        if (lbImg) lbImg.setAttribute("alt", altText);
         openLightbox(src, target);
       }
     });

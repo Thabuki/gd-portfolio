@@ -48,10 +48,16 @@ function updateAboutPhotoForPrettySmile(enabled) {
       };
       img.addEventListener("error", onErr, { once: true });
       img.setAttribute("src", prettySmileSrc);
+      // Remove any inline width/height so CSS controls size
+      img.removeAttribute("width");
+      img.removeAttribute("height");
     }
   } else {
-    if (img.getAttribute("src") !== normalSrc)
+    if (img.getAttribute("src") !== normalSrc) {
       img.setAttribute("src", normalSrc);
+      img.removeAttribute("width");
+      img.removeAttribute("height");
+    }
   }
 }
 function updateLogoForPrettySmile(enabled) {
@@ -102,7 +108,7 @@ const prefersReduced = window.matchMedia(
 ).matches;
 function prettysmileLoop() {
   if (!prettysmileEnabled || !prettysmileEl) return;
-  const lerp = prefersReduced ? 1 : 0.15;
+  const lerp = prefersReduced ? 1 : 0.07;
   prettysmileX = prettysmileX + (targetX - prettysmileX) * lerp;
   prettysmileY = prettysmileY + (targetY - prettysmileY) * lerp;
   prettysmileEl.style.left = `${Math.round(prettysmileX)}px`;
@@ -119,6 +125,10 @@ function enablePrettysmile() {
   prettysmileEl.alt = "Pretty Smile";
   prettysmileEl.style.width = "32px";
   prettysmileEl.style.height = "32px";
+  // Use absolute positioning with document coordinates for scroll-aware tracking
+  prettysmileEl.style.position = "absolute";
+  prettysmileEl.style.pointerEvents = "none";
+  prettysmileEl.style.zIndex = "10000";
   document.body.appendChild(prettysmileEl);
   // Offscreen init
   prettysmileX = -100;
@@ -129,27 +139,29 @@ function enablePrettysmile() {
   prettysmileEl.style.top = `${prettysmileY}px`;
   prettysmileEl.style.transform = "none";
 
-  // Track mouse in viewport coords and adjust with scroll
-  let clientX = 0,
-    clientY = 0;
+  // Track mouse in document coords (position:absolute = document-relative)
+  let pageX = 0,
+    pageY = 0;
+
   const updateTarget = () => {
-    targetX = clientX + window.scrollX + 12;
-    targetY = clientY + window.scrollY + 12;
+    targetX = pageX + 12;
+    targetY = pageY + 12;
     if (!prefersReduced && !prettysmileRAF)
       prettysmileRAF = requestAnimationFrame(prettysmileLoop);
     else prettysmileLoop();
   };
-  const onMove = (e) => {
-    clientX = e.clientX;
-    clientY = e.clientY;
+
+  function onMove(e) {
+    pageX = e.pageX;
+    pageY = e.pageY;
     updateTarget();
-  };
-  const onScroll = () => updateTarget();
-  window.addEventListener("mousemove", onMove);
-  window.addEventListener("scroll", onScroll, { passive: true });
+  }
+
+  // mousemove with pageX/pageY for absolute positioning
+  window.addEventListener("mousemove", onMove, { passive: true });
+
   prettysmileEl._cleanup = () => {
     window.removeEventListener("mousemove", onMove);
-    window.removeEventListener("scroll", onScroll);
   };
 }
 function disablePrettysmile() {

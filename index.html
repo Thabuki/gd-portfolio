@@ -14,13 +14,16 @@
     <meta property="og:description" content="Thales Rebelo - Game Designer" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://thalesrebelo.com/" />
+    <meta property="og:site_name" content="Thales Rebelo" />
     <meta
       property="og:image"
-      content="https://thalesrebelo.com/img/thales.jpg"
+      content="https://thalesrebelo.com/img/social-card.jpg"
     />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta
-      property="og:image"
-      content="https://thalesrebelo.com/img/social-card.svg"
+      property="og:image:alt"
+      content="Thales Rebelo – Game Designer portfolio preview"
     />
 
     <!-- Twitter Card -->
@@ -29,7 +32,11 @@
     <meta name="twitter:description" content="Thales Rebelo - Game Designer" />
     <meta
       name="twitter:image"
-      content="https://thalesrebelo.com/img/thales.jpg"
+      content="https://thalesrebelo.com/img/social-card.jpg"
+    />
+    <meta
+      name="twitter:image:alt"
+      content="Thales Rebelo – Game Designer portfolio preview"
     />
 
     <!-- Favicons -->
@@ -105,6 +112,7 @@
           <img
             src="img/logo.png"
             alt="Thales Rebelo logo"
+            height="36"
             decoding="async"
             fetchpriority="high"
           />
@@ -155,13 +163,21 @@
       <section id="professional-projects" class="section">
         <div class="container">
           <h2>Professional Projects</h2>
-          <div class="grid cards" data-section="main">
+          <div
+            class="grid cards"
+            data-section="main"
+            role="list"
+            aria-label="Professional Projects"
+          >
             <!-- Cards populated via js/data/projects.js and modules/modal.js -->
             <article
               class="card"
               tabindex="0"
               role="button"
               aria-haspopup="dialog"
+              aria-label="Open Changer Seven project details"
+              aria-posinset="1"
+              aria-setsize="3"
               data-id="main1"
             >
               <div class="thumb" aria-hidden="true"></div>
@@ -179,6 +195,9 @@
               tabindex="0"
               role="button"
               aria-haspopup="dialog"
+              aria-label="Open PAYDAY Crime War project details"
+              aria-posinset="2"
+              aria-setsize="3"
               data-id="main2"
             >
               <div class="thumb" aria-hidden="true"></div>
@@ -196,6 +215,9 @@
               tabindex="0"
               role="button"
               aria-haspopup="dialog"
+              aria-label="Open Archer: DANGER PHONE project details"
+              aria-posinset="3"
+              aria-setsize="3"
               data-id="main3"
             >
               <div class="thumb" aria-hidden="true"></div>
@@ -214,12 +236,20 @@
       <section id="other-projects" class="section alt">
         <div class="container">
           <h2>Other Projects</h2>
-          <div class="grid cards" data-section="other">
+          <div
+            class="grid cards"
+            data-section="other"
+            role="list"
+            aria-label="Other Projects"
+          >
             <article
               class="card"
               tabindex="0"
               role="button"
               aria-haspopup="dialog"
+              aria-label="Open GHOULF project details"
+              aria-posinset="1"
+              aria-setsize="5"
               data-id="other1"
             >
               <div class="thumb" aria-hidden="true"></div>
@@ -235,6 +265,9 @@
               tabindex="0"
               role="button"
               aria-haspopup="dialog"
+              aria-label="Open BORKSPEL project details"
+              aria-posinset="2"
+              aria-setsize="5"
               data-id="other2"
             >
               <div class="thumb" aria-hidden="true"></div>
@@ -250,6 +283,9 @@
               tabindex="0"
               role="button"
               aria-haspopup="dialog"
+              aria-label="Open The Omni Crusher project details"
+              aria-posinset="3"
+              aria-setsize="5"
               data-id="other4"
             >
               <div class="thumb" aria-hidden="true"></div>
@@ -265,6 +301,9 @@
               tabindex="0"
               role="button"
               aria-haspopup="dialog"
+              aria-label="Open Dark Souls Study project details"
+              aria-posinset="4"
+              aria-setsize="5"
               data-id="other5"
             >
               <div class="thumb" aria-hidden="true"></div>
@@ -280,6 +319,9 @@
               tabindex="0"
               role="button"
               aria-haspopup="dialog"
+              aria-label="Open Wrong project details"
+              aria-posinset="5"
+              aria-setsize="5"
               data-id="other3"
             >
               <div class="thumb" aria-hidden="true"></div>
@@ -300,6 +342,7 @@
               <img
                 src="img/thales.jpg"
                 alt="Photo of Thales Rebelo"
+                width="320"
                 loading="lazy"
                 decoding="async"
               />
@@ -410,6 +453,13 @@
     </div>
 
     <script type="module" src="./js/main.js"></script>
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("/sw.js").catch(() => {});
+        });
+      }
+    </script>
 
     <!-- Image Lightbox -->
     <div id="img-lightbox" class="img-lightbox" aria-hidden="true">

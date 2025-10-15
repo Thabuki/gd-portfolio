@@ -1,3 +1,11 @@
+/* Ensure about photo always has correct size, even when swapped */
+.about-photo img {
+  width: 320px;
+  height: auto;
+  max-width: 100%;
+  display: block;
+}
+/* Ensure about photo always has correct size, even when swapped */
 /* About section grid layout for desktop */
 .about-grid {
   display: grid;
