@@ -254,6 +254,10 @@
   const lbClose = lb ? lb.querySelector(".img-lightbox-close") : null;
   const lbContent = lb ? lb.querySelector(".img-lightbox-content") : null;
   const lbDialog = lb ? lb.querySelector(".img-lightbox-dialog") : null;
+  const lbZoomIndicator = lb
+    ? lb.querySelector(".img-lightbox-zoom-indicator")
+    : null;
+  const lbResetBtn = lb ? lb.querySelector(".img-lightbox-reset") : null;
 
   // Mantém a ordem de navegação conforme os cards no DOM
   const cardEls = qsa(".card[data-id]");
@@ -568,6 +572,7 @@
     natW: 0,
     natH: 0,
     lastFocus: null,
+    fullResLoaded: false,
   };
   function clamp(v, a, b) {
     return Math.max(a, Math.min(b, v));
@@ -575,6 +580,37 @@
   function applyLBTransform() {
     if (!lbImg) return;
     lbImg.style.transform = `translate(${lbState.tx}px, ${lbState.ty}px) scale(${lbState.scale})`;
+    updateZoomIndicator();
+  }
+  function updateZoomIndicator() {
+    if (!lbZoomIndicator || !lbState.baseScale) return;
+    const zoomPercent = Math.round((lbState.scale / lbState.baseScale) * 100);
+    lbZoomIndicator.textContent = `${zoomPercent}%`;
+  }
+  function resetZoom() {
+    if (!lb || !lbState.baseScale) return;
+    lbState.scale = lbState.baseScale;
+    lb.classList.remove("zoomed");
+    if (lbImg) lbImg.style.cursor = "zoom-in";
+    centerLB();
+    applyLBTransform();
+  }
+  function loadFullResImage() {
+    if (!lbImg || lbState.fullResLoaded) return;
+    const fullResSrc = lbImg.getAttribute("data-full-src");
+    if (!fullResSrc || lbImg.src === fullResSrc) return;
+
+    lbState.fullResLoaded = true;
+    const tempImg = new Image();
+    tempImg.onload = () => {
+      lbImg.src = fullResSrc;
+      lbImg.removeAttribute("data-full-src");
+    };
+    tempImg.onerror = () => {
+      // Se falhar, mantém a imagem atual
+      lbState.fullResLoaded = false;
+    };
+    tempImg.src = fullResSrc;
   }
   function centerLB() {
     if (!lbContent) return;
@@ -628,7 +664,14 @@
     lbImg.style.transform = "none";
     lbImg.style.cursor = "zoom-in";
     lb.classList.remove("zoomed");
+
+    // Configura lazy-loading: armazena URL completa e carrega versão de baixa resolução se disponível
+    // Se o src contém "_thumb" ou "-thumb", assume que é thumbnail; caso contrário, carrega direto
+    lbImg.setAttribute("data-full-src", src);
+
+    // Por enquanto carrega imagem completa; no futuro, pode detectar thumbnail automaticamente
     lbImg.src = src;
+
     const onLoad = () => {
       lbState.natW = lbImg.naturalWidth || 0;
       lbState.natH = lbImg.naturalHeight || 0;
@@ -637,6 +680,7 @@
       lbState.baseScale = contain;
       lbState.scale = lbState.baseScale;
       centerLB();
+      updateZoomIndicator();
     };
     if (lbImg.complete) onLoad();
     else lbImg.addEventListener("load", onLoad, { once: true });
@@ -652,6 +696,7 @@
     lbState.open = false;
     lbState.scale = lbState.baseScale = 1;
     lbState.tx = lbState.ty = 0;
+    lbState.fullResLoaded = false;
     if (lbState.lastFocus && lbState.lastFocus.focus) lbState.lastFocus.focus();
   }
 
@@ -674,6 +719,12 @@
         e.stopPropagation();
         closeLightbox();
       }
+    });
+  }
+  if (lbResetBtn) {
+    lbResetBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      resetZoom();
     });
   }
 
@@ -738,6 +789,7 @@
       applyLBTransform();
       lb.classList.add("zoomed");
       lbImg.style.cursor = "grab";
+      loadFullResImage();
     });
 
     // Zoom suave com roda do mouse (em torno do cursor)
@@ -765,6 +817,7 @@
         if (lbState.scale > minS + 0.001) {
           lb.classList.add("zoomed");
           lbImg.style.cursor = "grab";
+          loadFullResImage();
         } else {
           lb.classList.remove("zoomed");
           lbImg.style.cursor = "zoom-in";
@@ -779,24 +832,66 @@
     let didDrag = false;
     let lastX = 0,
       lastY = 0;
+    let lastMoveTime = 0;
+    let velocityX = 0,
+      velocityY = 0;
+    let momentumRAF = 0;
+
+    function startMomentum() {
+      if (momentumRAF) cancelAnimationFrame(momentumRAF);
+      const friction = 0.92; // desacelera ~8% por frame
+      const minSpeed = 0.5; // para quando velocidade < 0.5 px/frame
+
+      function animate() {
+        const speed = Math.sqrt(velocityX * velocityX + velocityY * velocityY);
+        if (speed < minSpeed) {
+          velocityX = velocityY = 0;
+          momentumRAF = 0;
+          return;
+        }
+        lbState.tx += velocityX;
+        lbState.ty += velocityY;
+        clampTranslate();
+        applyLBTransform();
+        velocityX *= friction;
+        velocityY *= friction;
+        momentumRAF = requestAnimationFrame(animate);
+      }
+      momentumRAF = requestAnimationFrame(animate);
+    }
+
     lbContent.addEventListener("mousedown", (e) => {
       if (lbState.scale <= lbState.baseScale + 0.001) return;
+      // Para momentum se houver
+      if (momentumRAF) {
+        cancelAnimationFrame(momentumRAF);
+        momentumRAF = 0;
+        velocityX = velocityY = 0;
+      }
       // Se o usuário clicou na imagem, permite arrastar; se clicou fora, pode fechar (tratado abaixo)
       dragging = true;
       didDrag = false;
       lastX = e.clientX;
       lastY = e.clientY;
+      lastMoveTime = performance.now();
       lb.classList.add("zoomed");
       lbImg.style.cursor = "grabbing";
+      loadFullResImage();
       e.preventDefault();
     });
     window.addEventListener("mousemove", (e) => {
       if (!dragging) return;
+      const now = performance.now();
+      const dt = Math.max(1, now - lastMoveTime);
       const dx = e.clientX - lastX;
       const dy = e.clientY - lastY;
       lastX = e.clientX;
       lastY = e.clientY;
+      lastMoveTime = now;
       if (Math.abs(dx) > 2 || Math.abs(dy) > 2) didDrag = true;
+      // Captura velocidade (px/ms)
+      velocityX = (dx / dt) * 16; // normaliza para ~60fps frame
+      velocityY = (dy / dt) * 16;
       lbState.tx += dx;
       lbState.ty += dy;
       clampTranslate();
@@ -805,6 +900,13 @@
     window.addEventListener("mouseup", () => {
       if (!dragging) return;
       dragging = false;
+      // Inicia momentum se velocidade for significativa
+      const speed = Math.sqrt(velocityX * velocityX + velocityY * velocityY);
+      if (speed > 1) {
+        startMomentum();
+      } else {
+        velocityX = velocityY = 0;
+      }
       if (lbState.scale > lbState.baseScale + 0.001)
         lbImg.style.cursor = "grab";
       else lbImg.style.cursor = "zoom-in";
@@ -867,6 +969,11 @@
           touchState.lastTapTime = now;
           if (dt > 0 && dt < 300) {
             // Duplo toque: alterna zoom centralizado no toque
+            // (mas ignora se acabou de fazer pan)
+            if (didDrag) {
+              didDrag = false;
+              return;
+            }
             const mx = pts[0].x;
             const my = pts[0].y;
             const { contain, cover } = getFitScales();
@@ -885,6 +992,7 @@
             applyLBTransform();
             if (lbState.scale > minS + 0.001) {
               lb.classList.add("zoomed");
+              loadFullResImage();
             } else {
               lb.classList.remove("zoomed");
               centerLB();
@@ -946,6 +1054,7 @@
           applyLBTransform();
           if (lbState.scale > lbState.baseScale + 0.001) {
             lb.classList.add("zoomed");
+            loadFullResImage();
           } else {
             lb.classList.remove("zoomed");
             centerLB();
@@ -956,11 +1065,17 @@
           const t = e.touches[0];
           const cx = t.clientX;
           const cy = t.clientY;
+          const now = performance.now();
+          const dt = Math.max(1, now - (lastMoveTime || now));
           const dx = cx - (touchState.lastX || cx);
           const dy = cy - (touchState.lastY || cy);
           touchState.lastX = cx;
           touchState.lastY = cy;
+          lastMoveTime = now;
           if (Math.abs(dx) > 1 || Math.abs(dy) > 1) didDrag = true;
+          // Captura velocidade
+          velocityX = (dx / dt) * 16;
+          velocityY = (dy / dt) * 16;
           lbState.tx += dx;
           lbState.ty += dy;
           clampTranslate();
@@ -975,6 +1090,15 @@
       (e) => {
         // limpar flags
         if (e.touches && e.touches.length === 0) {
+          // Inicia momentum se velocidade for significativa
+          const speed = Math.sqrt(
+            velocityX * velocityX + velocityY * velocityY
+          );
+          if (speed > 1 && lbState.scale > lbState.baseScale + 0.001) {
+            startMomentum();
+          } else {
+            velocityX = velocityY = 0;
+          }
           touchState.active = false;
           touchState.startDist = 0;
           touchState.panning = false;
