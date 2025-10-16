@@ -1,5 +1,5 @@
 /* Simple service worker for offline caching and faster repeat visits */
-const CACHE_VERSION = "v3-2025-10-15";
+const CACHE_VERSION = "v6-2025-10-16";
 const RUNTIME_CACHE = `runtime-${CACHE_VERSION}`;
 const PRECACHE = `precache-${CACHE_VERSION}`;
 
