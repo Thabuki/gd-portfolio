@@ -1,5 +1,5 @@
 /* Simple service worker for offline caching and faster repeat visits */
-const CACHE_VERSION = "v6-2025-10-16";
+const CACHE_VERSION = "v7-2025-10-16";
 const RUNTIME_CACHE = `runtime-${CACHE_VERSION}`;
 const PRECACHE = `precache-${CACHE_VERSION}`;
 
@@ -14,6 +14,7 @@ const PRECACHE_URLS = [
   "/css/cards.css",
   "/css/modal.css",
   "/css/secrets.css",
+  "/css/scrollbar.css",
   "/css/responsive.css",
   "/css/about.css",
   "/css/skip-link.css",
